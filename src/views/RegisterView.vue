@@ -1,69 +1,145 @@
 <!-- TODO: zmienic strukturę całości wg tego https://www.naiveui.com/en-US/os-theme/components/grid -->
 <template>
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-5">
-        <div class="card">
-          <h2 class="card-title text-center">Register</h2>
-          <div class="card-body py-md-4">
-            <form _lpchecked="1">
-              <div class="form-group">
-                <input type="text" class="form-control" id="name" placeholder="Name" />
-              </div>
-              <div class="form-group">
-                <input type="email" class="form-control" id="email" placeholder="Email" />
-              </div>
-
-              <div class="form-group">
-                <input type="password" class="form-control" id="password" placeholder="Password" />
-              </div>
-              <div class="form-group">
-                <input type="password" class="form-control" id="confirm-password" placeholder="Confirm password" />
-              </div>
-              <div class="d-flex flex-row align-items-center justify-content-between">
-                <router-link to="/login"><button class="btn btn-primary" id="buttonL">Login</button></router-link>
-                <button class="btn btn-primary">Create Account</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <n-space vertical>
+    <n-form style="width: 50%; margin: auto" ref="formRef" :model="formValue" :rules="rules">
+      <n-form-item path="name" label="Nazwa użytkownika">
+        <n-input v-model:value="formValue.name" type="text" placeholder="Nazwa użytkownika" @keydown.enter.prevent />
+      </n-form-item>
+      <n-form-item path="email" label="Email">
+        <n-input v-model:value="formValue.email" type="text" placeholder="Email" @keydown.enter.prevent />
+      </n-form-item>
+      <n-form-item path="password" label="Hasło">
+        <n-input v-model:value="formValue.password" type="password" placeholder="Hasło" @keydown.enter.prevent />
+      </n-form-item>
+      <n-form-item path="confirmpassword" label="Potwierdź hasło">
+        <n-input
+          v-model:value="formValue.confirmpassword"
+          :disabled="!formValue.password"
+          type="password"
+          placeholder="Potwierdź hasło"
+          @keydown.enter.prevent
+        />
+      </n-form-item>
+    </n-form>
+    <n-button-group style="gap: 8px 190px">
+      <router-link to="/login" style="text-decoration: none">
+        <n-button style="border-radius: 5px" round type="primary">Zaloguj</n-button>
+      </router-link>
+      <n-button style="border-radius: 5px" round type="primary">Rejestracja</n-button>
+    </n-button-group>
+  </n-space>
+  <pre>{{ JSON.stringify(formValue, null, 2) }}</pre>
 </template>
 
-<script lang="ts"></script>
+<script lang="ts">
+import { defineComponent, ref } from 'vue';
+import { FormInst, FormItemInst, FormItemRule, FormRules } from 'naive-ui';
+interface ModelType {
+  name: string | null;
+  email: string | null;
+  password: string | null;
+  confirmpassword: string | null;
+}
+export default defineComponent({
+  setup() {
+    const formRef = ref<FormInst | null>(null);
+    const rPasswordFormItemRef = ref<FormItemInst | null>(null);
+    const modelRef = ref<ModelType>({
+      name: null,
+      email: null,
+      password: null,
+      confirmpassword: null
+    });
+    function validatePasswordStartWith(rule: FormItemRule, value: string): boolean {
+      return (
+        !!modelRef.value.password &&
+        modelRef.value.password.startsWith(value) &&
+        modelRef.value.password.length >= value.length
+      );
+    }
+    function validatePasswordSame(rule: FormItemRule, value: string): boolean {
+      return value === modelRef.value.password;
+    }
 
-<style lang="scss" scoped>
-@import url('https://fonts.googleapis.com/css?family=PT+Sans');
-
-body {
-  background: #ffffff;
-  font-family: 'PT Sans', sans-serif;
-}
-h2 {
-  padding-top: 1.5rem;
-}
-
-.card {
-  border: 0.4rem solid #f8f9fa;
-  top: 10%;
-}
-.form-control {
-  background-color: #f8f9fa;
-  padding: 25px 15px;
-  margin-bottom: 1.3rem;
-}
-
-.btn {
-  padding: 15px;
-  background: rgba(148, 186, 101, 0.7);
-  border: 2px solid #2e2e2e;
-  margin: 10px;
-}
-.btn-primary:hover {
-  background-color: rgba(190, 12, 12, 0.7);
-  border-color: #2e2e2e;
-  transition: 0.3s;
-}
-</style>
+    const rules: FormRules = {
+      name: [
+        {
+          required: true,
+          validator(rule: FormItemRule, value: string) {
+            if (!value) {
+              return new Error('Nazwa jest wymagan');
+            }
+            return true;
+          },
+          trigger: ['input', 'blur']
+        }
+      ],
+      email: [
+        {
+          required: true,
+          validator(rule: FormItemRule, value: string) {
+            if (!value) {
+              return new Error('Email jest wymagany');
+            } else if (!/^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/.test(value)) {
+              return new Error('Podany email nie istnieje, upewnij się, że został zapisany poprawnie');
+            }
+            return true;
+          },
+          trigger: ['input', 'blur']
+        }
+      ],
+      password: [
+        {
+          required: true,
+          validator(rule: FormItemRule, value: string) {
+            if (!value) {
+              return new Error('Hasło jest wymagane');
+            }
+            return true;
+          },
+          trigger: ['input', 'blur']
+        }
+      ],
+      confirmpassword: [
+        {
+          required: true,
+          validator(rule: FormItemRule, value: string) {
+            if (!value) {
+              return new Error('Potwierdzenia hasla jest wymagane');
+            }
+            return true;
+          },
+          trigger: ['input', 'blur']
+        },
+        {
+          validator: validatePasswordStartWith,
+          message: 'Hasła nie są identyczne!',
+          trigger: 'input'
+        },
+        {
+          validator: validatePasswordSame,
+          message: 'Hasła nie są identyczne!',
+          trigger: ['blur', 'password-input']
+        }
+      ]
+    };
+    return {
+      formRef,
+      rPasswordFormItemRef,
+      formValue: modelRef,
+      rules,
+      handlePasswordInput() {
+        if (modelRef.value.confirmpassword) {
+          rPasswordFormItemRef.value?.validate({ trigger: 'password-input' });
+        }
+      },
+      handleValidateClick(e: MouseEvent) {
+        e.preventDefault();
+        formRef.value?.validate(errors => {
+          const lol = 0;
+        });
+      }
+    };
+  }
+});
+</script>
