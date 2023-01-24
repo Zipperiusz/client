@@ -5,6 +5,7 @@
       <n-layout-header>
         <nav>
           <router-link to="/" style="text-decoration: none">Home</router-link> |
+          <router-link to="/recipesView" style="text-decoration: none">Przepisy</router-link> |
           <router-link to="/addRecipe" style="text-decoration: none">Stwórz przepis</router-link> |
           <router-link to="/login" style="text-decoration: none">Login</router-link>
         </nav>
