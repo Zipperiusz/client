@@ -4,6 +4,7 @@ import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import AddRecipeView from '../views/AddRecipeView.vue';
 import RecipesView from '../views/RecipesView.vue';
+import LogoutView from '../views/LogoutView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -30,6 +31,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/recipesView',
     name: 'recipesView',
     component: RecipesView
+  },
+  {
+    path: '/logout',
+    name: 'LogoutView',
+    component: LogoutView
   }
 ];
 
