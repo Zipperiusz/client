@@ -2,6 +2,9 @@
 <template>
   <n-space vertical>
     <n-form style="width: 50%; margin: auto" ref="formRef" :model="formValue" :rules="rules">
+      <n-form-item path="name" label="Nazwa użytkownika">
+        <n-input v-model:value="formValue.name" type="text" placeholder="Nazwa użytkownika" @keydown.enter.prevent />
+      </n-form-item>
       <n-form-item path="email" label="Email">
         <n-input v-model:value="formValue.email" type="text" placeholder="Email" @keydown.enter.prevent />
       </n-form-item>
@@ -14,7 +17,7 @@
       </n-form-item>
     </n-form>
     <n-button-group style="gap: 8px 190px">
-      <n-button @click="register" style="border-radius: 5px" round type="primary">Zarejestruj</n-button>
+      <n-button @click="submit" style="border-radius: 5px" round type="primary">Zarejestruj</n-button>
       <router-link to="/login" style="text-decoration: none">
         <n-button style="border-radius: 5px" round type="primary">Logowanie</n-button>
       </router-link>
@@ -27,16 +30,20 @@ import { defineComponent, ref } from 'vue';
 import { FormInst, FormItemInst, FormItemRule, FormRules } from 'naive-ui';
 import axios from 'axios';
 import router from '@/router';
+import { authService } from '@/services/auth.service';
 interface ModelType {
+  name: string | null;
   email: string | null;
   password: string | null;
   confirmpassword: string | null;
 }
 export default defineComponent({
   setup() {
+    
     const formRef = ref<FormInst | null>(null);
     const rPasswordFormItemRef = ref<FormItemInst | null>(null);
     const modelRef = ref<ModelType>({
+      name: null,
       email: null,
       password: null,
       confirmpassword: null
@@ -53,6 +60,18 @@ export default defineComponent({
     }
 
     const rules: FormRules = {
+      name: [
+        {
+          required: true,
+          validator(rule: FormItemRule, value: string) {
+            if (!value) {
+              return new Error('Nazwa jest wymagan');
+            }
+            return true;
+          },
+          trigger: ['input', 'blur']
+        }
+      ],
       email: [
         {
           required: true,
@@ -103,27 +122,27 @@ export default defineComponent({
       ]
     };
 
-    const register = () => {
-
+    const submit = () => {
       formRef.value?.validate().then(() => {
-        axios.post(`${process.env.VUE_APP_API_URL}/Auth/Register`,
-          {
-            email: modelRef.value.email,
-            password: modelRef.value.password
-          }).then((res) => {
-            console.log(res.data)
-          })
-      })
-      router.push('/')
+        const name = modelRef.value.name ?? '';
+        const email = modelRef.value.email ?? '';
+        const password = modelRef.value.password ?? '';
+        return authService.register(name, email, password).then(() => {
+          router.push('/login');
+        });
+      });
+    };
 
 
-    }
+
+
+
     return {
       formRef,
       rPasswordFormItemRef,
       formValue: modelRef,
       rules,
-      register,
+      submit,
       handlePasswordInput() {
         if (modelRef.value.confirmpassword) {
           rPasswordFormItemRef.value?.validate({ trigger: 'password-input' });

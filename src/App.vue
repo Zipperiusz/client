@@ -8,13 +8,12 @@
           <router-link to="/addRecipe" style="text-decoration: none">Stwórz przepis</router-link> |
           <router-link v-if="!isLoggedIn" to="/login" style="text-decoration: none">Login</router-link>
           <router-link v-if="isLoggedIn" to="/logout" style="text-decoration: none">Logout</router-link>
+          <div style="display:inline-block;margin-left:auto; float:right;" v-if="isLoggedIn">{{ name }}</div>
         </nav>
         <div id="lol"></div>
       </n-layout-header>
       <n-layout class="in_container">
-        <n-layout-content>
-          <router-view />
-        </n-layout-content>
+        <router-view />
       </n-layout>
       <n-layout-footer>stopka</n-layout-footer>
     </n-layout>
@@ -22,15 +21,14 @@
 </template>
 
 <script lang="ts">
-import { useStorage } from '@vueuse/core'
-import { useLocalStorage } from '@vueuse/core'
-import { useRouter } from 'vue-router';
+
 import { authService } from './services/auth.service';
 export default {
 
   setup() {
     return {
-      isLoggedIn: authService.isLoggedIn
+      isLoggedIn: authService.isLoggedIn,
+      name: authService.getName()
     };
   }
 }

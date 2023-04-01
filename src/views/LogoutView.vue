@@ -17,6 +17,7 @@ export default {
     const router = useRouter();
 
     const confirmLogout = async () => {
+      authService.setName('');
       authService.setToken('');
       router.push('/');
     }

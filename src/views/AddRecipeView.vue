@@ -55,46 +55,52 @@ import { FormInst, FormItemRule, useMessage } from 'naive-ui';
 export default defineComponent({
   setup() {
     const formRef = ref<FormInst | null>(null);
+    const size = ref('medium');
+    const model = ref({
+      name: null,
+      category: null,
+      ingredients: null,
+      steps: null
+    });
+    const generalOptions = ['Śniadanie', 'Obiad', 'Kolacja', 'Na słodko', 'Na słono', 'Deser', 'Przekąska'].map(v => ({
+      label: v,
+      value: v
+    }));
+    const rules = {
+      name: {
+        required: true,
+        trigger: ['blur', 'input'],
+        message: 'Nazwa potrawy jest wymagana'
+      },
+      category: {
+        required: true,
+        trigger: ['blur', 'input'],
+        message: 'Proszę dodać przynajmniej jedną kategorię'
+      },
+      ingerdients: {
+        type: 'array',
+        required: true,
+        trigger: ['blur', 'change'],
+        message: 'Proszę uzupełnić składniki'
+      },
+      steps: {
+        type: 'array',
+        required: true,
+        trigger: ['blur', 'change'],
+        message: 'Proszę uzupełnić kroki'
+      }
+    };
+    const handleValidateButtonClick = (e: MouseEvent) => {
+      console.log('przepis dodany');
+    };
+
     return {
       formRef,
-      size: ref('medium'),
-      model: ref({
-        name: null,
-        category: null,
-        ingredients: null,
-        steps: null
-      }),
-      generalOptions: ['Śniadanie', 'Obiad', 'Kolacja', 'Na słodko', 'Na słono', 'Deser', 'Przekąska'].map(v => ({
-        label: v,
-        value: v
-      })),
-      rules: {
-        name: {
-          required: true,
-          trigger: ['blur', 'input'],
-          message: 'Nazwa potrawy jest wymagana'
-        },
-        category: {
-          required: true,
-          trigger: ['blur', 'input'],
-          message: 'Proszę dodać przynajmniej jedną kategorię'
-        },
-        ingerdients: {
-          type: 'array',
-          required: true,
-          trigger: ['blur', 'change'],
-          message: 'Proszę uzupełnić składniki'
-        },
-        steps: {
-          type: 'array',
-          required: true,
-          trigger: ['blur', 'change'],
-          message: 'Proszę uzupełnić kroki'
-        }
-      },
-      handleValidateButtonClick(e: MouseEvent) {
-        console.log('przepis dodany');
-      }
+      size,
+      model,
+      generalOptions,
+      rules,
+      handleValidateButtonClick
     };
   }
 });
