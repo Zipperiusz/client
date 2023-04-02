@@ -10,7 +10,7 @@ export class AuthService {
 
     public login(email: string, password: string): Promise<string> {
         return axios.post(`${process.env.VUE_APP_API_URL}/Auth/login`, { email, password }).then((response) => {
-            this.setToken(response.data.token);
+            this.setToken(response.data.data);
             this.setName(response.data.name)
 
             return response.data.token;
