@@ -1,44 +1,116 @@
 <template>
-    <n-space vertical size="large">
-        <n-tag v-model:checked="list" checkable @change="addToList('Cebula')">
-            Cebula
-        </n-tag>
-        <n-tag v-model:checked="list" checkable @change="addToList('Marchewka')">
-            Marchewka
-        </n-tag>
+    <n-tag v-model:checked="ingredient.checked" @click="handleTagChange(ingredient.checked, ingredient.name)" checkable
+        v-for="ingredient in Ingredients" :key="ingredient.id">
+        {{ ingredient.name }}
+    </n-tag>
+    <br><br>
 
-        <button @click="get">Daj</button>
-    </n-space>
+    <n-button @click="get()" type="primary">
+        Primary
+    </n-button>
+
+    <div id="data">
+        <div class="recipe" v-for="(recipe,index) in Recipes" :key="index">
+        {{ recipe.name }}<br>
+        <span v-for="(ingredient,ingredientIndex) in recipe.ingredients" :key="ingredientIndex">
+        {{ingredient.name+" "}}</span><br>
+            {{ recipe.username }}
+    </div>
+    </div>
+    
 </template>
   
 <script lang="ts">
-import { useLocalStorage } from '@vueuse/core';
 import axios from 'axios';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, onBeforeMount, ref, watch } from 'vue';
 
 export default defineComponent({
     setup() {
-        const list = useLocalStorage('ingre', ['']);
-        const addToList = (value: string) => {
-            list.value.push(value);
+        const chosenIngredients = ref<string[]>([]);
+
+        type Ingredient = {
+            name: string;
+            id: number;
+            checked: boolean;
+            type: string;
+        };
+
+        type Recipe = {
+            name: string;
+            ingredients: Array<{ name: string, quantity: number, quantityType: string }>;
+            imageUrl:string,
+            url: string;
+            steps: Array<{ name: string, time: number }>
+            username: string
         }
-        const get = () => {
-            axios.post('https://localhost:7179/Recipe/WithIngredients?page=1&itemsPerPage=5', 
-                 ["Cebula","Pomidor","Marchewka"],
+
+        const Ingredients = ref<Ingredient[]>([]);
+        const Recipes = ref<Recipe[]>([]);
+
+
+        const getInredientList = () => {
+            axios.get(`https://localhost:7179/Ingredient/GetAll`).then(res => {
+                res.data.ingredients.forEach((element: { id: number, name: string, type: string }) => {
+                    Ingredients.value.push({
+                        name: element.name,
+                        id: element.id,
+                        checked: false,
+                        type: element.type
+                    });
+                });
+            });
+        };
+
+        const get = (page = 1, itemsPerPage = 5) => {
+            console.log(chosenIngredients.value);
+            axios.post(
+                `https://localhost:7179/Recipe/WithIngredients?page=${page}&itemsPerPage=${itemsPerPage}`,
+                chosenIngredients.value
             )
                 .then(response => {
-                    console.log(response.data);
+                    Recipes.value = [];
+                    // console.log(response.data);
+                    response.data.result.forEach((element: any) => {
+                        Recipes.value.push(
+                            {
+                                name:element.name,
+                                imageUrl:element.imageURL,
+                                url:element.originalURL,
+                                steps:element.steps,
+                                username:element.userId,
+                                ingredients:element.ingredients
+                            }
+                        )
+                    });
+                    console.log(Recipes.value)
+
+
                 })
                 .catch(error => {
-                    console.log(error);
+                    console.log(error.message);
                 });
-
         }
 
-        return { addToList, get, list };
-    },
+        const handleTagChange = (checked: boolean, ingredientName: string) => {
+            if (checked) {
+                chosenIngredients.value.push(ingredientName);
+            } else {
+                chosenIngredients.value.splice(chosenIngredients.value.indexOf(ingredientName), 1);
+            }
+        };
+
+        onBeforeMount(() => {
+            getInredientList();
+        })
+
+        watch(chosenIngredients, (newVal) => {
+            console.log("Chosen ingredients changed", newVal);
+        });
+
+        return { Ingredients, Recipes, chosenIngredients, get, handleTagChange };
+    }
 })
-</script>  
+</script>
 
 <style lang="scss">
 .category {
@@ -64,5 +136,10 @@ export default defineComponent({
 
 .n-space {
     min-height: 60vh;
+}
+
+.recipe {
+    border: 1px black solid;
+    margin:5px;
 }
 </style>
