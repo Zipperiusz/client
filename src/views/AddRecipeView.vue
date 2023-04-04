@@ -1,107 +1,105 @@
 <template>
-  <n-form
-    ref="formRef"
-    :model="model"
-    :rules="rules"
-    label-placement="left"
-    require-mark-placement="right-hanging"
-    :size="size"
-    label-width="auto"
-    :style="{
-      maxWidth: '640px',
-      margin: 'auto'
-    }"
-  >
-    <n-form-item label="Nazwa" path="inputValue">
-      <n-input v-model:value="model.name" placeholder="Nazwa" />
-    </n-form-item>
-    <n-form-item label="Kategorie" path="multipleSelectValue">
-      <n-select v-model:value="model.category" placeholder="Kategorie" :options="generalOptions" multiple />
-    </n-form-item>
-    <n-form-item label="Składniki" path="textareaValue">
-      <n-input
-        v-model:value="model.ingredients"
-        placeholder="Składniki"
-        type="textarea"
-        :autosize="{
-          minRows: 3
-        }"
-      />
-    </n-form-item>
-    <n-form-item label="Kroki" path="textareaValue">
-      <n-input
-        v-model:value="model.steps"
-        placeholder="Prosimy o numerowanie każdego kroku"
-        type="textarea"
-        :autosize="{
-          minRows: 3
-        }"
-      />
-    </n-form-item>
-    <div style="display: flex; justify-content: flex-end">
-      <n-button style="border-radius: 3px" round type="primary" @click="handleValidateButtonClick">
-        Dodaj przepis
-      </n-button>
-    </div>
-  </n-form>
+  <NForm :model="formValues">
+    <NFormItem label="Name">
+      <NInput v-model="formValues.name" placeholder="Enter name" />
+    </NFormItem>
 
-  <pre>{{ JSON.stringify(model, null, 2) }}</pre>
+    <NFormItem label="Image URL">
+      <NInput v-model="formValues.imageUrl" placeholder="Enter image URL" />
+    </NFormItem>
+
+    <NFormItem label="Original URL">
+      <NInput v-model="formValues.originalUrl" placeholder="Enter original URL" />
+    </NFormItem>
+
+    <NFormItem label="Ingredients">
+      <div v-for="(ingredient, index) in formValues.ingredients" :key="index">
+        <NInput v-model="ingredient.name" :placeholder="`Ingredient ${index + 1}`" />
+        <NInput v-model="ingredient.quantity" :placeholder="`Quantity ${index + 1}`" />
+        <NInput v-model="ingredient.quantityType" :placeholder="`Quantity Type ${index + 1}`" />
+      </div>
+      <NButton @click="addIngredient">Add Ingredient</NButton>
+    </NFormItem>
+
+    <NFormItem label="Steps">
+      <div v-for="(step, index) in formValues.steps" :key="index">
+        <NInput v-model="step.name" :placeholder="`Step ${index + 1}`" />
+        <NInput v-model="step.time" :placeholder="`Time ${index + 1}`" />
+      </div>
+      <NButton @click="addStep">Add Step</NButton>
+    </NFormItem>
+
+    <NFormItem>
+      <NButton type="primary" @click="submitForm">Submit</NButton>
+    </NFormItem>
+  </NForm>
+
+  <pre>{{ JSON.stringify(formValues, null, 2) }}
+  </pre>
 </template>
+
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { FormInst, FormItemRule, useMessage } from 'naive-ui';
+import {
+  NButton,
+  NForm,
+  NFormItem,
+  NInput,
+} from 'naive-ui';
 
 export default defineComponent({
+  components: {
+    NButton,
+    NForm,
+    NFormItem,
+    NInput,
+  },
+
   setup() {
-    const formRef = ref<FormInst | null>(null);
-    const size = ref('medium');
-    const model = ref({
-      name: null,
-      category: null,
-      ingredients: null,
-      steps: null
+    const formValues = ref({
+      name: '',
+      imageUrl: '',
+      originalUrl: '',
+      ingredients: [{
+        id: 0,
+        quantity: '',
+        quantityType: '',
+        ingredientId: '',
+        name: ''
+      }],
+      steps: [{name:'',
+      time:0}],
     });
-    const generalOptions = ['Śniadanie', 'Obiad', 'Kolacja', 'Na słodko', 'Na słono', 'Deser', 'Przekąska'].map(v => ({
-      label: v,
-      value: v
-    }));
-    const rules = {
-      name: {
-        required: true,
-        trigger: ['blur', 'input'],
-        message: 'Nazwa potrawy jest wymagana'
-      },
-      category: {
-        required: true,
-        trigger: ['blur', 'input'],
-        message: 'Proszę dodać przynajmniej jedną kategorię'
-      },
-      ingerdients: {
-        type: 'array',
-        required: true,
-        trigger: ['blur', 'change'],
-        message: 'Proszę uzupełnić składniki'
-      },
-      steps: {
-        type: 'array',
-        required: true,
-        trigger: ['blur', 'change'],
-        message: 'Proszę uzupełnić kroki'
-      }
+
+    const addIngredient = () => {
+      formValues.value.ingredients.push({
+        id: formValues.value.ingredients.length + 1,
+        quantity: '',
+        quantityType: '',
+        ingredientId: '',
+        name: '',
+      });
     };
-    const handleValidateButtonClick = (e: MouseEvent) => {
-      console.log('przepis dodany');
+
+    const addStep = () => {
+      formValues.value.steps.push({
+        name: '',
+        time: 0,
+      });
+    };
+
+    const submitForm = () => {
+      console.log(formValues.value);
+      // You can do something with formValues here, such as submit it to a server
     };
 
     return {
-      formRef,
-      size,
-      model,
-      generalOptions,
-      rules,
-      handleValidateButtonClick
+      formValues,
+      addIngredient,
+      addStep,
+      submitForm,
     };
-  }
+  },
 });
 </script>
