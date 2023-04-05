@@ -5,7 +5,7 @@
     </n-tag>
     <br><br>
 
-    <n-button @click="get()" type="primary">
+    <n-button @click="get(page,itemsPerPage)" type="primary">
         Primary
     </n-button>
 
@@ -16,6 +16,9 @@
         {{ingredient.name+" "}}</span><br>
             {{ recipe.username }}
     </div>
+
+    <n-pagination v-model:page="page" v-model:page-size="itemsPerPage" :page-sizes="pageSizes"     show-size-picker
+ :page-count="pageCount"  />
     </div>
     
 </template>
@@ -27,30 +30,57 @@ import { defineComponent, onBeforeMount, ref, watch } from 'vue';
 export default defineComponent({
     setup() {
         const chosenIngredients = ref<string[]>([]);
-
-        type Ingredient = {
+        let page = ref(1)
+        let itemsPerPage = ref(5)
+        let pageCount = ref(1)
+        const pageSizes = [
+            {
+                label:'5',
+                value:5
+            },
+            {
+                label:'10',
+                value:10
+            },
+            {
+                label:'20',
+                value:20
+            }
+        ]
+        type IngredientTag = {
             name: string;
             id: number;
             checked: boolean;
             type: string;
         };
 
+        type Ingredient = {
+            name: string;
+            quantity: number;
+            quantityType: string;
+        };
+
+        type Step ={
+            name:string;
+            time:number;
+        }
+
         type Recipe = {
             name: string;
-            ingredients: Array<{ name: string, quantity: number, quantityType: string }>;
+            ingredients: Array<Ingredient>;
             imageUrl:string,
             url: string;
-            steps: Array<{ name: string, time: number }>
+            steps: Array<Step>
             username: string
         }
 
-        const Ingredients = ref<Ingredient[]>([]);
+        const Ingredients = ref<IngredientTag[]>([]);
         const Recipes = ref<Recipe[]>([]);
 
 
         const getInredientList = () => {
             axios.get(`https://localhost:7179/Ingredient/GetAll`).then(res => {
-                res.data.ingredients.forEach((element: { id: number, name: string, type: string }) => {
+                res.data.ingredients.forEach((element: IngredientTag) => {
                     Ingredients.value.push({
                         name: element.name,
                         id: element.id,
@@ -62,14 +92,16 @@ export default defineComponent({
         };
 
         const get = (page = 1, itemsPerPage = 5) => {
+            Recipes.value = [];
             console.log(chosenIngredients.value);
             axios.post(
                 `https://localhost:7179/Recipe/WithIngredients?page=${page}&itemsPerPage=${itemsPerPage}`,
                 chosenIngredients.value
             )
                 .then(response => {
-                    Recipes.value = [];
-                    // console.log(response.data);
+                    
+                    pageCount.value=response.data.totalPages;
+                    console.log(response.data);
                     response.data.result.forEach((element: any) => {
                         Recipes.value.push(
                             {
@@ -87,9 +119,11 @@ export default defineComponent({
 
                 })
                 .catch(error => {
-                    console.log(error.message);
+                    console.log("Nope")
                 });
         }
+
+        
 
         const handleTagChange = (checked: boolean, ingredientName: string) => {
             if (checked) {
@@ -103,11 +137,12 @@ export default defineComponent({
             getInredientList();
         })
 
-        watch(chosenIngredients, (newVal) => {
-            console.log("Chosen ingredients changed", newVal);
+        watch([page, itemsPerPage], () => {
+            get(page.value,itemsPerPage.value);
         });
 
-        return { Ingredients, Recipes, chosenIngredients, get, handleTagChange };
+
+        return { Ingredients, Recipes, chosenIngredients, get, handleTagChange,page, itemsPerPage,pageCount,pageSizes };
     }
 })
 </script>
