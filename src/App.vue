@@ -15,7 +15,6 @@
       <n-layout class="in_container">
         <router-view />
       </n-layout>
-      <n-layout-footer>stopka</n-layout-footer>
     </n-layout>
   </n-space>
 </template>
@@ -42,6 +41,7 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
+
 
 .n-layout {
   background-color: #f7f6e6;

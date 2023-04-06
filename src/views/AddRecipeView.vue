@@ -35,7 +35,7 @@
   </NForm>
 
   <pre>{{ JSON.stringify(formValues, null, 2) }}
-  </pre>
+    </pre>
 </template>
 
 
@@ -47,6 +47,7 @@ import {
   NFormItem,
   NInput,
 } from 'naive-ui';
+import axios from 'axios';
 
 export default defineComponent({
   components: {
@@ -58,18 +59,20 @@ export default defineComponent({
 
   setup() {
     const formValues = ref({
-      name: '',
+      name: ref(''),
       imageUrl: '',
       originalUrl: '',
       ingredients: [{
         id: 0,
         quantity: '',
-        quantityType: '',
-        ingredientId: '',
-        name: ''
+        name:'',
+        quantityType: ''
+       
       }],
-      steps: [{name:'',
-      time:0}],
+      steps: [{
+        name: '',
+        time: 0
+      }],
     });
 
     const addIngredient = () => {
@@ -77,7 +80,6 @@ export default defineComponent({
         id: formValues.value.ingredients.length + 1,
         quantity: '',
         quantityType: '',
-        ingredientId: '',
         name: '',
       });
     };
@@ -89,8 +91,42 @@ export default defineComponent({
       });
     };
 
-    const submitForm = () => {
+    const  submitForm = async () => {
+      const testData = {
+        "name": "Testowansko3",
+        "imageUrl": "outue.com",
+        "originalUrl": "asdasd",
+        "ingredients": [
+          {
+            "id": 4,
+            "quantity": 2,
+            "quantityType": "kg"            
+          },
+          {
+            "id": 3,            
+            "quantity": 3.5,
+            "quantityType": "litry"            
+          }
+        ],
+        "steps": [
+          {
+            "name": "zabij sie",
+            "time": 520,
+            "id": 0
+          },
+          {
+            "name": "mleko",
+            "time": 510,
+            "id": 0
+          }
+        ]
+      }
       console.log(formValues.value);
+      // await axios.post(`${VUE_APP_API_URL}/Recipe`, testData).then(res => {
+      //   console.log(res.data)
+      // }).catch(err => {
+      //   console.log(err.message)
+      // })
       // You can do something with formValues here, such as submit it to a server
     };
 

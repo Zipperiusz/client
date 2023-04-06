@@ -1,82 +1,61 @@
 <template>
-    <n-tag v-model:checked="ingredient.checked" @click="handleTagChange(ingredient.checked, ingredient.name)" checkable
-        v-for="ingredient in Ingredients" :key="ingredient.id">
-        {{ ingredient.name }}
-    </n-tag>
-    <br><br>
-
-    <n-button @click="get(page,itemsPerPage)" type="primary">
-        Primary
-    </n-button>
-
-    <div id="data">
-        <div class="recipe" v-for="(recipe,index) in Recipes" :key="index">
-        {{ recipe.name }}<br>
-        <span v-for="(ingredient,ingredientIndex) in recipe.ingredients" :key="ingredientIndex">
-        {{ingredient.name+" "}}</span><br>
-            {{ recipe.username }}
+    <n-row>
+      <n-col :span="4">
+        <n-tag v-model:checked="ingredient.checked" @click="handleTagChange(ingredient.checked, ingredient.name)" checkable
+          v-for="ingredient in Ingredients" :key="ingredient.id">
+          {{ ingredient.name }}
+        </n-tag>
+      </n-col>
+      <n-col :span="20">
+        <div class="container">
+        <RecipeCard class="flex-item" :item="recipe" v-for="(recipe, index) in Recipes" :key="index" />
     </div>
-
-    <n-pagination v-model:page="page" v-model:page-size="itemsPerPage" :page-sizes="pageSizes"     show-size-picker
- :page-count="pageCount"  />
-    </div>
-    
-</template>
+        <n-space justify="center">
+          <n-pagination v-model:page="page" v-model:page-size="itemsPerPage" :page-sizes="pageSizes" show-size-picker :page-count="pageCount" />
+        </n-space>
+      </n-col>
+    </n-row>
+  </template>
   
 <script lang="ts">
+import { IngredientTag } from '@/types/IngredientTag';
+import { Recipe } from '@/types/Recipe';
+import RecipeCard from '@/assets/components/RecipeCard.vue';
 import axios from 'axios';
 import { defineComponent, onBeforeMount, ref, watch } from 'vue';
 
 export default defineComponent({
+    components: {
+        RecipeCard
+    },
+
     setup() {
         const chosenIngredients = ref<string[]>([]);
         let page = ref(1)
         let itemsPerPage = ref(5)
         let pageCount = ref(1)
+        let timeout = 0
+
         const pageSizes = [
             {
-                label:'5',
-                value:5
+                label: '5',
+                value: 5
             },
             {
-                label:'10',
-                value:10
+                label: '10',
+                value: 10
             },
             {
-                label:'20',
-                value:20
+                label: '20',
+                value: 20
             }
         ]
-        type IngredientTag = {
-            name: string;
-            id: number;
-            checked: boolean;
-            type: string;
-        };
 
-        type Ingredient = {
-            name: string;
-            quantity: number;
-            quantityType: string;
-        };
 
-        type Step ={
-            name:string;
-            time:number;
-        }
 
-        type Recipe = {
-            name: string;
-            ingredients: Array<Ingredient>;
-            imageUrl:string,
-            url: string;
-            steps: Array<Step>
-            username: string
-        }
 
         const Ingredients = ref<IngredientTag[]>([]);
         const Recipes = ref<Recipe[]>([]);
-
 
         const getInredientList = () => {
             axios.get(`https://localhost:7179/Ingredient/GetAll`).then(res => {
@@ -92,25 +71,27 @@ export default defineComponent({
         };
 
         const get = (page = 1, itemsPerPage = 5) => {
+            
             Recipes.value = [];
             console.log(chosenIngredients.value);
+            
             axios.post(
                 `https://localhost:7179/Recipe/WithIngredients?page=${page}&itemsPerPage=${itemsPerPage}`,
                 chosenIngredients.value
             )
                 .then(response => {
-                    
-                    pageCount.value=response.data.totalPages;
+
+                    pageCount.value = response.data.totalPages;
                     console.log(response.data);
                     response.data.result.forEach((element: any) => {
                         Recipes.value.push(
                             {
-                                name:element.name,
-                                imageUrl:element.imageURL,
-                                url:element.originalURL,
-                                steps:element.steps,
-                                username:element.userId,
-                                ingredients:element.ingredients
+                                name: element.name,
+                                imageUrl: element.imageUrl,
+                                description: element.description,
+                                steps: element.steps,
+                                username: element.user.name,
+                                ingredients: element.ingredients
                             }
                         )
                     });
@@ -119,11 +100,11 @@ export default defineComponent({
 
                 })
                 .catch(error => {
-                    console.log("Nope")
+                    console.log(`Nope ${error.message}`)
                 });
         }
 
-        
+
 
         const handleTagChange = (checked: boolean, ingredientName: string) => {
             if (checked) {
@@ -131,18 +112,26 @@ export default defineComponent({
             } else {
                 chosenIngredients.value.splice(chosenIngredients.value.indexOf(ingredientName), 1);
             }
+
+
+            if (timeout) clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                get(page.value, itemsPerPage.value)
+            }, 1000)
+
         };
 
         onBeforeMount(() => {
             getInredientList();
+            
         })
 
         watch([page, itemsPerPage], () => {
-            get(page.value,itemsPerPage.value);
+            get(page.value, itemsPerPage.value);
         });
 
 
-        return { Ingredients, Recipes, chosenIngredients, get, handleTagChange,page, itemsPerPage,pageCount,pageSizes };
+        return { Ingredients, Recipes, chosenIngredients, get, handleTagChange, page, itemsPerPage, pageCount, pageSizes };
     }
 })
 </script>
@@ -153,13 +142,6 @@ export default defineComponent({
     width: 100%;
 }
 
-.n-layout {
-    min-height: 60vh;
-
-    .n-layout-sider {
-        background: rgba(128, 128, 128, 0.3);
-    }
-}
 
 
 
@@ -169,12 +151,18 @@ export default defineComponent({
     max-height: 250px;
 }
 
-.n-space {
-    min-height: 60vh;
-}
 
 .recipe {
     border: 1px black solid;
-    margin:5px;
+    margin: 5px;
+}
+
+.container{
+    display: flex;
+    flex-wrap:wrap;
+    .flex-item{
+        justify-content: center;
+
+    }
 }
 </style>
