@@ -1,40 +1,36 @@
 <template>
-  <NForm :model="formValues">
-    <NFormItem label="Name">
-      <NInput v-model="formValues.name" placeholder="Enter name" />
-    </NFormItem>
+  <n-form ref="formRef" :model="formValue">
+    <n-form-item label="Name" path="user.name">
+      <n-input v-model:value="formValue.name" placeholder="Nazwa" />
+    </n-form-item>
+    <n-form-item label="Description" path="user.description">
+      <n-input v-model:value="formValue.description" placeholder="Description" />
+    </n-form-item>
+    <n-form-item label="imageUrl" path="imageUrl">
+      <n-input v-model:value="formValue.imageUrl" placeholder="imageUrl" />
+    </n-form-item>
+    <n-dynamic-input v-model:value="formValue.steps" :on-create="onStepCreate">
+      <template #default="{ value }">
+        <n-input v-model:value="value.name" />
+        <n-input-number v-model:value="value.time" :precision="0" />
+      </template>
+    </n-dynamic-input>
 
-    <NFormItem label="Image URL">
-      <NInput v-model="formValues.imageUrl" placeholder="Enter image URL" />
-    </NFormItem>
+    <n-dynamic-input v-model:value="formValue.ingredients" :on-create="onIngredientCreate">
+      <template #default="{ value }">
+        <n-select v-model:value="value.id" :options="selectOptions" />
+        <n-input-number v-model:value="value.quantity" />
+        <n-input v-model:value="value.quantityType" />
+      </template>
+    </n-dynamic-input>
 
-    <NFormItem label="Original URL">
-      <NInput v-model="formValues.originalUrl" placeholder="Enter original URL" />
-    </NFormItem>
+    <n-button @click="submitForm">
+      SENT
+    </n-button>
 
-    <NFormItem label="Ingredients">
-      <div v-for="(ingredient, index) in formValues.ingredients" :key="index">
-        <NInput v-model="ingredient.name" :placeholder="`Ingredient ${index + 1}`" />
-        <NInput v-model="ingredient.quantity" :placeholder="`Quantity ${index + 1}`" />
-        <NInput v-model="ingredient.quantityType" :placeholder="`Quantity Type ${index + 1}`" />
-      </div>
-      <NButton @click="addIngredient">Add Ingredient</NButton>
-    </NFormItem>
+  </n-form>
 
-    <NFormItem label="Steps">
-      <div v-for="(step, index) in formValues.steps" :key="index">
-        <NInput v-model="step.name" :placeholder="`Step ${index + 1}`" />
-        <NInput v-model="step.time" :placeholder="`Time ${index + 1}`" />
-      </div>
-      <NButton @click="addStep">Add Step</NButton>
-    </NFormItem>
-
-    <NFormItem>
-      <NButton type="primary" @click="submitForm">Submit</NButton>
-    </NFormItem>
-  </NForm>
-
-  <pre>{{ JSON.stringify(formValues, null, 2) }}
+  <pre>{{ JSON.stringify(formValue, null, 2) }}
     </pre>
 </template>
 
@@ -42,86 +38,46 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import {
-  NButton,
-  NForm,
-  NFormItem,
-  NInput,
+
 } from 'naive-ui';
 import axios from 'axios';
 
 export default defineComponent({
-  components: {
-    NButton,
-    NForm,
-    NFormItem,
-    NInput,
-  },
-
+  
   setup() {
-    const formValues = ref({
-      name: ref(''),
+    const formValue = ref({
+      name: '',
       imageUrl: '',
-      originalUrl: '',
-      ingredients: [{
-        id: 0,
-        quantity: '',
-        name:'',
-        quantityType: ''
-       
-      }],
-      steps: [{
+      description: '',
+      ingredients: ref([{
+        id: '',
+        quantity: 1,
+        quantityType: '',
+        name: ''
+
+      }]),
+      steps: ref([{
         name: '',
         time: 0
-      }],
+      }]),
     });
 
-    const addIngredient = () => {
-      formValues.value.ingredients.push({
-        id: formValues.value.ingredients.length + 1,
-        quantity: '',
-        quantityType: '',
-        name: '',
-      });
-    };
+    const selectOptions = ref([
+      {
+        label:"item1",
+        value:1
+      },{
+        label:"item2",
+        value:2
+      },{
+        label:"item3",
+        value:3
+      },
+    ])
 
-    const addStep = () => {
-      formValues.value.steps.push({
-        name: '',
-        time: 0,
-      });
-    };
+    const submitForm = async () => {
 
-    const  submitForm = async () => {
-      const testData = {
-        "name": "Testowansko3",
-        "imageUrl": "outue.com",
-        "originalUrl": "asdasd",
-        "ingredients": [
-          {
-            "id": 4,
-            "quantity": 2,
-            "quantityType": "kg"            
-          },
-          {
-            "id": 3,            
-            "quantity": 3.5,
-            "quantityType": "litry"            
-          }
-        ],
-        "steps": [
-          {
-            "name": "zabij sie",
-            "time": 520,
-            "id": 0
-          },
-          {
-            "name": "mleko",
-            "time": 510,
-            "id": 0
-          }
-        ]
-      }
-      console.log(formValues.value);
+      console.log(formValue.value);
       // await axios.post(`${VUE_APP_API_URL}/Recipe`, testData).then(res => {
       //   console.log(res.data)
       // }).catch(err => {
@@ -131,11 +87,26 @@ export default defineComponent({
     };
 
     return {
-      formValues,
-      addIngredient,
-      addStep,
+      formValue,
       submitForm,
+      selectOptions,
+      onStepCreate() {
+        return {
+          name: '',
+          time: 0
+        }
+      },
+      onIngredientCreate() {
+        return {
+          id: '',
+          quantity: 1,
+          name: '',
+          quantityType: ''
+        }
+      }
     };
   },
+
+
 });
 </script>
