@@ -153,44 +153,45 @@ export default defineComponent({
 
 .container {
     display: flex;
-    flex: 1; 
-    
+    flex: 1;
+
     .tag-list {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 10px;
-  margin: 3px;
-  border: 2px solid black;
-  flex: 0 0 20%;
+        display: flex;
+        flex-wrap: wrap;
+        padding: 10px;
+        margin: 3px;
+        border: 2px solid black;
+        flex: 0 0 20%;
 
-  .tag-item {
-    width: calc(50% - 4px);
-    margin: 2px;
-    padding: 15px;
-  }
+        .tag-item {
+            width: calc(50% - 4px);
+            margin: 2px;
+            padding: 15px;
+        }
 
-  @media only screen and (max-width: 600px) {
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex: 1 1 100%;
+        @media only screen and (max-width: 600px) {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1 1 100%;
 
-    .tag-item {
-      width: 100%;
-      margin: 5px;
+            .tag-item {
+                width: 100%;
+                margin: 5px;
+            }
+        }
     }
-  }
-}
+
     .recipe-col {
         .recipe-cards {
             display: flex;
             flex-wrap: wrap;
-            width:100%;
+            width: 100%;
             justify-content: flex-start;
-            margin:5px;
-            gap:5px;
+            margin: 5px;
+            gap: 5px;
             // .card-item {
-                
+
             // }
         }
 
