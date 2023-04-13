@@ -1,21 +1,24 @@
 <template>
-    <n-row>
-      <n-col :span="4">
-        <n-tag v-model:checked="ingredient.checked" @click="handleTagChange(ingredient.checked, ingredient.name)" checkable
-          v-for="ingredient in Ingredients" :key="ingredient.id">
-          {{ ingredient.name }}
-        </n-tag>
-      </n-col>
-      <n-col :span="20">
-        <div class="container">
-        <RecipeCard class="flex-item" :item="recipe" v-for="(recipe, index) in Recipes" :key="index" />
+    <div class="container">
+        <div class="tag-list">
+            <n-tag class="tag-item" v-model:checked="ingredient.checked"
+                @click="handleTagChange(ingredient.checked, ingredient.name)" checkable v-for="ingredient in Ingredients"
+                :key="ingredient.id">
+                {{ ingredient.name }}
+            </n-tag>
+        </div>
+        <div class="recipe-col">
+            <div class="recipe-cards">
+                <RecipeCard class="card-item" :item="recipe" v-for="(recipe, index) in Recipes" :key="index" />
+
+            </div>
+            <div class="pagination" v-if="showPagination">
+                <n-pagination v-model:page="page" v-model:page-size="itemsPerPage" :page-sizes="pageSizes" show-size-picker
+                    :page-count="pageCount" />
+            </div>
+        </div>
     </div>
-        <n-space justify="center">
-          <n-pagination v-model:page="page" v-model:page-size="itemsPerPage" :page-sizes="pageSizes" show-size-picker :page-count="pageCount" />
-        </n-space>
-      </n-col>
-    </n-row>
-  </template>
+</template>
   
 <script lang="ts">
 import { IngredientTag } from '@/types/IngredientTag';
@@ -23,11 +26,15 @@ import { Recipe } from '@/types/Recipe';
 import RecipeCard from '@/assets/components/RecipeCard.vue';
 import axios from 'axios';
 import { defineComponent, onBeforeMount, ref, watch } from 'vue';
+import { computed } from '@vue/reactivity';
 
 export default defineComponent({
     components: {
         RecipeCard
     },
+
+
+
 
     setup() {
         const chosenIngredients = ref<string[]>([]);
@@ -35,6 +42,8 @@ export default defineComponent({
         let itemsPerPage = ref(5)
         let pageCount = ref(1)
         let timeout = 0
+
+        let showPagination = computed(() => Recipes.value.length > 0)
 
         const pageSizes = [
             {
@@ -71,10 +80,10 @@ export default defineComponent({
         };
 
         const get = (page = 1, itemsPerPage = 5) => {
-            
+
             Recipes.value = [];
-            console.log(chosenIngredients.value);
-            
+            // console.log(chosenIngredients.value);
+
             axios.post(
                 `https://localhost:7179/Recipe/WithIngredients?page=${page}&itemsPerPage=${itemsPerPage}`,
                 chosenIngredients.value
@@ -82,7 +91,7 @@ export default defineComponent({
                 .then(response => {
 
                     pageCount.value = response.data.totalPages;
-                    console.log(response.data);
+                    // console.log(response.data)
                     response.data.result.forEach((element: any) => {
                         Recipes.value.push(
                             {
@@ -95,12 +104,12 @@ export default defineComponent({
                             }
                         )
                     });
-                    console.log(Recipes.value)
+                    // console.log(Recipes.value)
 
 
                 })
                 .catch(error => {
-                    console.log(`Nope ${error.message}`)
+                    // console.log(`Nope ${error.message}`)
                 });
         }
 
@@ -123,7 +132,7 @@ export default defineComponent({
 
         onBeforeMount(() => {
             getInredientList();
-            
+
         })
 
         watch([page, itemsPerPage], () => {
@@ -131,38 +140,66 @@ export default defineComponent({
         });
 
 
-        return { Ingredients, Recipes, chosenIngredients, get, handleTagChange, page, itemsPerPage, pageCount, pageSizes };
+        return { Ingredients, Recipes, chosenIngredients, get, handleTagChange, page, itemsPerPage, pageCount, pageSizes, showPagination };
     }
 })
 </script>
 
 <style lang="scss">
-.category {
-    display: inline-block;
-    width: 100%;
-}
-
-
-
-
-.n-card {
-    max-width: 300px;
-    margin: 10px;
-    max-height: 250px;
-}
-
-
 .recipe {
     border: 1px black solid;
     margin: 5px;
 }
 
-.container{
+.container {
     display: flex;
-    flex-wrap:wrap;
-    .flex-item{
-        justify-content: center;
+    flex: 1; 
+    
+    .tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px;
+  margin: 3px;
+  border: 2px solid black;
+  flex: 0 0 20%;
 
+  .tag-item {
+    width: calc(50% - 4px);
+    margin: 2px;
+    padding: 15px;
+  }
+
+  @media only screen and (max-width: 600px) {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 100%;
+
+    .tag-item {
+      width: 100%;
+      margin: 5px;
     }
+  }
+}
+    .recipe-col {
+        .recipe-cards {
+            display: flex;
+            flex-wrap: wrap;
+            width:100%;
+            justify-content: flex-start;
+            margin:5px;
+            gap:5px;
+            // .card-item {
+                
+            // }
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+        }
+    }
+
+
 }
 </style>
