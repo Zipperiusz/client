@@ -169,20 +169,11 @@ export default defineComponent({
             padding: 15px;
         }
 
-        @media only screen and (max-width: 600px) {
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex: 1 1 100%;
-
-            .tag-item {
-                width: 100%;
-                margin: 5px;
-            }
-        }
+        
     }
 
     .recipe-col {
+        width: 100%;
         .recipe-cards {
             display: flex;
             flex-wrap: wrap;
@@ -190,9 +181,9 @@ export default defineComponent({
             justify-content: flex-start;
             margin: 5px;
             gap: 5px;
-            // .card-item {
-
-            // }
+            .card-item {
+                flex-grow: 1;
+            }
         }
 
         .pagination {

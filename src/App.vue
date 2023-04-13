@@ -1,17 +1,21 @@
 <template>
   <div class="app-container">
     <nav>
-      <router-link class="link" to="/">Home</router-link> 
-      <router-link class="link" to="/recipesView">Przepisy</router-link> 
-      <router-link class="link" to="/addRecipe">Stwórz przepis</router-link> 
-      <router-link class="link" v-if="!isLoggedIn" to="/login">Login</router-link>
-      <router-link class="link" v-if="isLoggedIn" to="/logout">Logout</router-link>
-      <router-link class="link" to="/user" v-if="isLoggedIn">
+      <div class="links">
+        <router-link class="link" to="/">Home</router-link> 
+        <router-link class="link" to="/recipesView">Przepisy</router-link> 
+        <router-link class="link" to="/addRecipe">Stwórz przepis</router-link> 
+      </div>
+      <div class="logged-in">
+        <router-link class="link" v-if="!isLoggedIn" to="/login">Login</router-link>
+        <router-link class="link" v-if="isLoggedIn" to="/logout">Logout</router-link>
+        <router-link class="link" to="/user" v-if="isLoggedIn">
         Zalogowany: {{ name }} 
-        <Icon size="24">
+        <Icon size="16">
         <User />
       </Icon>
-      </router-link>      
+      </router-link>   
+      </div>   
     </nav>
     <div id="lol"></div>
     
@@ -56,13 +60,19 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  
-
 
   nav {
     display: flex;
-    align-self: flex-start;
+    justify-content: space-between;
+
+    .links {
+      display: flex;
+      align-items: center;
+    }
+    .logged-in {
+      display: flex;
+      align-items: center;
+    }
     .link {
       padding: 20px 15px 20px 15px;
       text-decoration: none;
