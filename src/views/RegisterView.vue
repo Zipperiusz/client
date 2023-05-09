@@ -28,7 +28,6 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { FormInst, FormItemInst, FormItemRule, FormRules } from 'naive-ui';
-import axios from 'axios';
 import router from '@/router';
 import { authService } from '@/services/auth.service';
 interface ModelType {

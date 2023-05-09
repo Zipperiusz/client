@@ -1,6 +1,8 @@
 <template>
     <div class="container">
+        
         <div class="tag-list">
+            <n-button @click="selectAll" type="info" style="width:100%">Zaznacz wszystko</n-button>
             <n-tag class="tag-item" v-model:checked="ingredient.checked"
                 @click="handleTagChange(ingredient.checked, ingredient.name)" checkable v-for="ingredient in Ingredients"
                 :key="ingredient.id">
@@ -65,6 +67,17 @@ export default defineComponent({
 
         const Ingredients = ref<IngredientTag[]>([]);
         const Recipes = ref<Recipe[]>([]);
+
+        const selectAll = () =>{
+            let buttons = document.getElementsByClassName("n-tag")
+            Array.from(buttons).forEach((elem:Element) =>{
+                if(!elem.classList.contains("n-tag--checked")){
+                    let item: HTMLElement = elem as HTMLElement;
+                    item.click();
+                }
+            })
+            
+        }
 
         const getInredientList = () => {
             axios.get(`https://localhost:7179/Ingredient/GetAll`).then(res => {
@@ -140,7 +153,7 @@ export default defineComponent({
         });
 
 
-        return { Ingredients, Recipes, chosenIngredients, get, handleTagChange, page, itemsPerPage, pageCount, pageSizes, showPagination };
+        return { Ingredients, Recipes, chosenIngredients, get, handleTagChange, page, itemsPerPage, pageCount, pageSizes, showPagination, selectAll };
     }
 })
 </script>
@@ -178,12 +191,10 @@ export default defineComponent({
             display: flex;
             flex-wrap: wrap;
             width: 100%;
-            justify-content: flex-start;
+            justify-content: center;
             margin: 5px;
-            gap: 5px;
-            .card-item {
-                flex-grow: 1;
-            }
+            gap: 15px;
+            
         }
 
         .pagination {

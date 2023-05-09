@@ -1,13 +1,14 @@
 <template>
+  <div class="form-container">
   <n-form ref="formRef" :model="formValue">
     <n-form-item label="Name" path="user.name">
       <n-input v-model:value="formValue.name" placeholder="Nazwa" />
     </n-form-item>
-    <n-form-item label="Description" path="user.description">
-      <n-input v-model:value="formValue.description" placeholder="Description" />
+    <n-form-item label="Opis" path="user.description">
+      <n-input v-model:value="formValue.description" placeholder="Opis" />
     </n-form-item>
-    <n-form-item label="imageUrl" path="imageUrl">
-      <n-input v-model:value="formValue.imageUrl" placeholder="imageUrl" />
+    <n-form-item label="Link do zdjęcia" path="imageUrl">
+      <n-input v-model:value="formValue.imageUrl" placeholder="Link do zdjęcia" />
     </n-form-item>
 
     <n-divider title-placement="center">
@@ -18,7 +19,7 @@
       <template #default="{ value }">
         <n-select v-model:value="value.id" :options="selectOptions" />
         <n-input-number v-model:value="value.quantity" />
-        <n-input v-model:value="value.quantityType" />
+        <n-input v-model:value="value.quantityType" placeholder="Jednostka" />
       </template>
     </n-dynamic-input>
 
@@ -27,17 +28,17 @@
     </n-divider>
     <n-dynamic-input v-model:value="formValue.steps" :on-create="onStepCreate">
       <template #default="{ value }">
-        <n-input v-model:value="value.name" />
+        <n-input v-model:value="value.name" placeholder="Krok" />
         <n-input-number v-model:value="value.time" :precision="0" />
       </template>
-    </n-dynamic-input>
-    <n-button @click="submitForm">
-      SENT
+    </n-dynamic-input> <br>
+    <n-button type="success" @click="submitForm">
+      Wyślij
     </n-button>
 
   </n-form>
 
- 
+</div>
 </template>
 
 
@@ -124,3 +125,12 @@ export default defineComponent({
 
 });
 </script>
+
+<style lang="scss">
+  .form-container{
+    flex-basis: 100%;
+    display:flex;
+    justify-content: center;
+    align-content: center;
+  }
+</style>
