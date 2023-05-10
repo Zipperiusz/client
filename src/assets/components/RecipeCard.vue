@@ -1,20 +1,24 @@
 <template>
-    <div class="card-container">
+    <div class="card-container" >
+        <img :src="item.imageUrl" />
+        
+        
+        
+        <!-- <div class="image">
+            <img :src="item.imageUrl" />
+        </div> -->
+        <div class="informations">
+            <div class="title">{{ item.name }}</div>
+            <span>Czas przygotowania: </span>
+            <span v-if="time.hours > 0">{{ time.hours }} h </span>
+            <span v-if="time.minutes > 0"> {{ time.minutes }} min </span>
+            <span v-if="time.seconds > 0"> {{ time.seconds }} sec </span>
+        </div>
         <div class="icon-section" @click="favorite = !favorite">
             <Icon color="red" size="20">
                 <StarRegular v-if="!favorite" />
                 <Star v-if="favorite" />
             </Icon>
-        </div>
-        <div class="title">{{ item.name }}</div>
-        <div class="image">
-            <img :src="item.imageUrl" />
-        </div>
-        <div class="informations">
-            <span>Czas przygotowania: </span>
-            <span v-if="time.hours > 0">{{ time.hours }} h </span>
-            <span v-if="time.minutes > 0"> {{ time.minutes }} min </span>
-            <span v-if="time.seconds > 0"> {{ time.seconds }} sec </span>
         </div>
         <div class="button-link">
             <n-button @click="calculateTime" type="info">Czytaj dalej...</n-button>
@@ -79,28 +83,31 @@ export default defineComponent({
     flex-grow: 1;
     display: flex;
     justify-content: center;
-    min-height: 450px;
-    min-width: 250px;
+    min-height: 165px;
+    min-width: 265px;
     max-width: 350px;
-    border: 1px solid black;
+    border-radius: 4%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.6), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -webkit-box-shadow: inset 0px 0px 20px 1px rgba(0,0,0,0.75);
+    -moz-box-shadow: inset 0px 0px 20px 0px rgba(0,0,0,0.6);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75), inset 0px 0px 30px 0px rgba(0, 0, 0, 0.6);
     flex-wrap: wrap;
-    padding: 15px;
-    border-radius: 5% 5% 40% 40%;
-
-    .image {
-        flex-basis: 100%;
-
-        img {
-            min-width: 250px;
-            max-width: 300px;
-            aspect-ratio: 16/9;
-        }
+    background-color: #c7c5a9;
+    font-size: 15px;
+    font-weight: bold;
+    img {
+        width:100%;
+        border-radius: 5% 5% 0% 0%;
+        aspect-ratio: 16/9;
     }
+    
 
     .icon-section {
-
-        text-align: end;
-        flex-basis: 100%;
+        padding-right:2%;
+        text-align: right;
+        justify-content: right;
+        flex-basis: 6%;
+        
 
         .xicon:hover {
             cursor: pointer;
@@ -111,6 +118,15 @@ export default defineComponent({
         flex-basis: 100%;
         justify-self: flex-end;
         align-self: flex-end;
+        margin-top: 3%;
+        margin-bottom: 5%;
+    }
+
+    .informations {
+        padding-left:2%;
+        text-align: left;
+        flex-basis: 90%;
+        
     }
 
 }

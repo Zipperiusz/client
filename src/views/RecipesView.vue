@@ -2,12 +2,110 @@
     <div class="container">
         
         <div class="tag-list">
-            <n-button @click="selectAll" type="info" style="width:100%">Zaznacz wszystko</n-button>
-            <n-tag class="tag-item" v-model:checked="ingredient.checked"
-                @click="handleTagChange(ingredient.checked, ingredient.name)" checkable v-for="ingredient in Ingredients"
+            <!-- <n-popselect multiple :options="Ingredients.filter(a => (a.type =='Vegetable'))" 
+            v-for="ingredient in Ingredients.filter(a => (a.type =='Vegetable'))" :key="ingredient.id">
+                <n-button>
+                  {{ Array.isArray(value) && value.length ? value : 'Warzywa' }}
+                </n-button>
+              </n-popselect> -->
+              <!-- <select class="tag-item" multiple >
+                <option @click="handleTagChange(ingredient.checked, ingredient.name)" checkable v-for="ingredient in Ingredients.filter(a => (a.type =='Spices'))"
                 :key="ingredient.id">
                 {{ ingredient.name }}
-            </n-tag>
+                </option>
+              </select> -->
+            <n-button @click="selectAll" type="info" style="width:100%">Zaznacz wszystko</n-button>
+            <h1 style="width:100%">- Warzywa -</h1>
+                <n-tag class="tag-item" v-model:checked="ingredient.checked"
+                    @click="handleTagChange(ingredient.checked, ingredient.name)" checkable v-for="ingredient in Ingredients.filter(a => (a.type =='Vegetable'))"
+                    :key="ingredient.id">
+                    {{ ingredient.name }}
+                </n-tag>
+            
+                <h1 style="width:100%">- Owoce -</h1>
+                <n-tag class="tag-item" v-model:checked="ingredient.checked"
+                    @click="handleTagChange(ingredient.checked, ingredient.name)" checkable v-for="ingredient in Ingredients.filter(a => (a.type =='Fruits'))"
+                    :key="ingredient.id">
+                    {{ ingredient.name }}
+                </n-tag>
+            
+                <h1 style="width:100%">- Mięso -</h1>
+                <n-tag class="tag-item" v-model:checked="ingredient.checked"
+                    @click="handleTagChange(ingredient.checked, ingredient.name)" checkable v-for="ingredient in Ingredients.filter(a => (a.type =='Meat'))"
+                    :key="ingredient.id">
+                    {{ ingredient.name }}
+                </n-tag>
+            
+                <h1 style="width:100%">- Ryby -</h1>
+                <n-tag class="tag-item" v-model:checked="ingredient.checked"
+                    @click="handleTagChange(ingredient.checked, ingredient.name)" checkable v-for="ingredient in Ingredients.filter(a => (a.type =='Fish'))"
+                    :key="ingredient.id">
+                    {{ ingredient.name }}
+                </n-tag>
+            
+                <h1 style="width:100%">- Nabiał -</h1>
+                <n-tag class="tag-item" v-model:checked="ingredient.checked"
+                    @click="handleTagChange(ingredient.checked, ingredient.name)" checkable v-for="ingredient in Ingredients.filter(a => (a.type =='Dairy'))"
+                    :key="ingredient.id">
+                    {{ ingredient.name }}
+                </n-tag>
+            
+                <h1 style="width:100%">- Grzyby -</h1>
+                <n-tag class="tag-item" v-model:checked="ingredient.checked"
+                    @click="handleTagChange(ingredient.checked, ingredient.name)" checkable v-for="ingredient in Ingredients.filter(a => (a.type =='Mushroom'))"
+                    :key="ingredient.id">
+                    {{ ingredient.name }}
+                </n-tag>
+            
+                <h1 style="width:100%">- Przyprawy -</h1>
+                <n-tag class="tag-item" v-model:checked="ingredient.checked"
+                    @click="handleTagChange(ingredient.checked, ingredient.name)" checkable v-for="ingredient in Ingredients.filter(a => (a.type =='Spices'))"
+                    :key="ingredient.id">
+                    {{ ingredient.name }}
+                </n-tag>
+            
+                <h1 style="width:100%">- Pieczywo -</h1>
+                <n-tag class="tag-item" v-model:checked="ingredient.checked"
+                    @click="handleTagChange(ingredient.checked, ingredient.name)" checkable v-for="ingredient in Ingredients.filter(a => (a.type =='Bread'))"
+                    :key="ingredient.id">
+                    {{ ingredient.name }}
+                </n-tag>
+            
+                <h1 style="width:100%">- Oleje -</h1>
+                <n-tag class="tag-item" v-model:checked="ingredient.checked"
+                    @click="handleTagChange(ingredient.checked, ingredient.name)" checkable v-for="ingredient in Ingredients.filter(a => (a.type =='Oils'))"
+                    :key="ingredient.id">
+                    {{ ingredient.name }}
+                </n-tag>
+           
+                <h1 style="width:100%">- Makarony -</h1>
+                <n-tag class="tag-item" v-model:checked="ingredient.checked"
+                    @click="handleTagChange(ingredient.checked, ingredient.name)" checkable v-for="ingredient in Ingredients.filter(a => (a.type =='Pasta'))"
+                    :key="ingredient.id">
+                    {{ ingredient.name }}
+                </n-tag>
+            
+                <h1 style="width:100%">- Zboże -</h1>
+                <n-tag class="tag-item" v-model:checked="ingredient.checked"
+                    @click="handleTagChange(ingredient.checked, ingredient.name)" checkable v-for="ingredient in Ingredients.filter(a => (a.type =='Grain'))"
+                    :key="ingredient.id">
+                    {{ ingredient.name }}
+                </n-tag>
+            
+                <h1 style="width:100%">- Sosy -</h1>
+                <n-tag class="tag-item" v-model:checked="ingredient.checked"
+                    @click="handleTagChange(ingredient.checked, ingredient.name)" checkable v-for="ingredient in Ingredients.filter(a => (a.type =='Dips'))"
+                    :key="ingredient.id">
+                    {{ ingredient.name }}
+                </n-tag>
+            
+                <h1 style="width:100%">- Delikatesy -</h1>
+                <n-tag class="tag-item" v-model:checked="ingredient.checked"
+                    @click="handleTagChange(ingredient.checked, ingredient.name)" checkable v-for="ingredient in Ingredients.filter(a => (a.type =='delicatessen'))"
+                    :key="ingredient.id">
+                    {{ ingredient.name }}
+                </n-tag>
+            
         </div>
         <div class="recipe-col">
             <div class="recipe-cards">
@@ -21,7 +119,7 @@
         </div>
     </div>
 </template>
-  
+
 <script lang="ts">
 import { IngredientTag } from '@/types/IngredientTag';
 import { Recipe } from '@/types/Recipe';
@@ -153,7 +251,27 @@ export default defineComponent({
         });
 
 
-        return { Ingredients, Recipes, chosenIngredients, get, handleTagChange, page, itemsPerPage, pageCount, pageSizes, showPagination, selectAll };
+        return { Ingredients, Recipes, chosenIngredients, get, handleTagChange, page, itemsPerPage, pageCount, pageSizes, showPagination, selectAll,
+            value: ref<string[] | null>(null),
+      options: [
+        {
+          label: 'Out',
+          value: 'Out'
+        },
+        {
+          label: 'Who Feels Love?',
+          value: 'Who Feels Love?'
+        },
+        {
+          label: 'Sunday Morning Call',
+          value: 'Sunday Morning Call',
+          disabled: true
+        },
+        {
+          label: 'Roll It Over',
+          value: 'Roll It Over'
+        }
+      ] };
     }
 })
 </script>
@@ -196,6 +314,7 @@ export default defineComponent({
             gap: 15px;
             
         }
+        
 
         .pagination {
             display: flex;
@@ -204,5 +323,8 @@ export default defineComponent({
     }
 
 
+}
+h1{
+    text-align: center;
 }
 </style>
