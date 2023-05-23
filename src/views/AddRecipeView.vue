@@ -1,54 +1,58 @@
 <template>
   <div class="form-container">
-  <n-form ref="formRef" :model="formValue">
-    <n-form-item label="Name" path="user.name">
-      <n-input v-model:value="formValue.name" placeholder="Nazwa" />
-    </n-form-item>
-    <n-form-item label="Opis" path="user.description">
-      <n-input v-model:value="formValue.description" placeholder="Opis" />
-    </n-form-item>
-    <n-form-item label="Link do zdjęcia" path="imageUrl">
-      <n-input v-model:value="formValue.imageUrl" placeholder="Link do zdjęcia" />
-    </n-form-item>
+    <n-form ref="formRef" :model="formValue">
+      <n-form-item label="Name" path="user.name">
+        <n-input v-model:value="formValue.name" placeholder="Nazwa" />
+      </n-form-item>
+      <n-form-item label="Opis" path="user.description">
+        <n-input v-model:value="formValue.description" placeholder="Opis" />
+      </n-form-item>
+      <n-form-item label="Link do zdjęcia" path="imageUrl">
+        <n-input v-model:value="formValue.imageUrl" placeholder="Link do zdjęcia" />
+      </n-form-item>
 
-    <n-divider title-placement="center">
-      Składniki
-    </n-divider>
+      <n-divider title-placement="center">
+        Składniki
+      </n-divider>
 
-    <n-dynamic-input v-model:value="formValue.ingredients" :on-create="onIngredientCreate">
-      <template #default="{ value }">
-        <n-select v-model:value="value.id" :options="selectOptions" />
-        <n-input-number v-model:value="value.quantity" />
-        <n-input v-model:value="value.quantityType" placeholder="Jednostka" />
-      </template>
-    </n-dynamic-input>
+      <n-dynamic-input v-model:value="formValue.ingredients" :on-create="onIngredientCreate">
+        <template #default="{ value }">
 
-    <n-divider title-placement="center">
-      Kroki
-    </n-divider>
-    <n-dynamic-input v-model:value="formValue.steps" :on-create="onStepCreate">
-      <template #default="{ value }">
-        <n-input v-model:value="value.name" placeholder="Krok" />
-        <n-input-number v-model:value="value.time" :precision="0" />
-      </template>
-    </n-dynamic-input> <br>
-    <n-button type="success" @click="submitForm">
-      Wyślij
-    </n-button>
+          <input v-model="value.id" list="ingredients" id="ingredients-input" name="ingredients">
+          <datalist id="ingredients">
+            <option v-for="option  in selectOptions" :key="option.value" :value="option.label" />
+          </datalist>
 
-  </n-form>
+          <n-input-number v-model:value="value.quantity" />
+          <n-input v-model:value="value.quantityType" placeholder="Jednostka" />
+        </template>
+      </n-dynamic-input>
 
-</div>
+      <n-divider title-placement="center">
+        Kroki
+      </n-divider>
+      <n-dynamic-input v-model:value="formValue.steps" :on-create="onStepCreate">
+        <template #default="{ value }">
+          <n-input v-model:value="value.name" placeholder="Krok" />
+          <n-input-number v-model:value="value.time" :precision="0" />
+        </template>
+      </n-dynamic-input> <br>
+      <n-button type="success" @click="submitForm">
+        Wyślij
+      </n-button>
+
+    </n-form>
+
+  </div>
 </template>
 
 
 <script lang="ts">
 import { defineComponent, onBeforeMount, ref } from 'vue';
-import {
-
-} from 'naive-ui';
 import axios from 'axios';
-
+import { FakeOption } from "@/types/FakeOption";
+import  {IngredientTag}  from '@/types/IngredientTag';
+import  {Ingredient}  from '@/types/Ingredient';
 export default defineComponent({
 
   setup() {
@@ -69,24 +73,21 @@ export default defineComponent({
       }]),
     });
 
-    const selectOptions = ref([{}])
+    const selectOptions = ref<FakeOption[]>([])
 
 
     const getInredientList = () => {
-      axios.get(`https://localhost:7179/Ingredient/GetAll`).then(res => {
-        console.log(res.data)
-        res.data.ingredients.forEach((element: any) => {
-          selectOptions.value.push({
-            label: element.name,
-            value: element.id
-          })
-        });
+      axios.get<{ ingredients: IngredientTag[] }>(`https://localhost:7179/Ingredient/GetAll`).then(res => {
+        // console.log(res.data)
+        selectOptions.value = res.data.ingredients.map((elem) => ({
+          label: elem.name,
+          value: elem.id
+        }))
       });
     };
 
     onBeforeMount(() => {
       getInredientList();
-
     })
 
 
@@ -127,10 +128,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-  .form-container{
-    flex-basis: 100%;
-    display:flex;
-    justify-content: center;
-    align-content: center;
-  }
+.form-container {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
 </style>

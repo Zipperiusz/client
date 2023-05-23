@@ -1,7 +1,7 @@
-import { Ingredient } from "./Ingredient";
-import { Step } from "./Step";
+import {Ingredient} from "./Ingredient";
+import {Step} from "./Step";
 
-export type Recipe = {
+export  interface Recipe  {
     name: string;
     ingredients: Array<Ingredient>;
     imageUrl:string,

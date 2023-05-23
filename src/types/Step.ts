@@ -1,4 +1,4 @@
-export type Step ={
+export  interface Step {
     name:string;
     time:number;
 }

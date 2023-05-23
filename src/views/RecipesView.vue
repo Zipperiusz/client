@@ -121,8 +121,8 @@
 </template>
 
 <script lang="ts">
-import { IngredientTag } from '@/types/IngredientTag';
-import { Recipe } from '@/types/Recipe';
+import {IngredientTag } from '@/types/IngredientTag';
+import {Recipe} from '@/types/Recipe';
 import RecipeCard from '@/assets/components/RecipeCard.vue';
 import axios from 'axios';
 import { defineComponent, onBeforeMount, ref, watch } from 'vue';
