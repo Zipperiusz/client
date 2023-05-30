@@ -15,18 +15,14 @@
         Składniki
       </n-divider>
 
+      
       <n-dynamic-input v-model:value="formValue.ingredients" :on-create="onIngredientCreate">
-        <template #default="{ value }">
-
-          <input v-model="value.id" list="ingredients" id="ingredients-input" name="ingredients">
-          <datalist id="ingredients">
-            <option v-for="option  in selectOptions" :key="option.value" :value="option.label" />
-          </datalist>
-
-          <n-input-number v-model:value="value.quantity" />
-          <n-input v-model:value="value.quantityType" placeholder="Jednostka" />
-        </template>
-      </n-dynamic-input>
+      <template #default="{ value }">
+        <n-select v-model:value="value.id" :options="selectOptions" filterable />
+        <n-input-number v-model:value="value.quantity" />
+        <n-input v-model:value="value.quantityType" />
+      </template>
+    </n-dynamic-input>
 
       <n-divider title-placement="center">
         Kroki

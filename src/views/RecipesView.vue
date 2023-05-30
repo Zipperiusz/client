@@ -252,26 +252,7 @@ export default defineComponent({
 
 
         return { Ingredients, Recipes, chosenIngredients, get, handleTagChange, page, itemsPerPage, pageCount, pageSizes, showPagination, selectAll,
-            value: ref<string[] | null>(null),
-      options: [
-        {
-          label: 'Out',
-          value: 'Out'
-        },
-        {
-          label: 'Who Feels Love?',
-          value: 'Who Feels Love?'
-        },
-        {
-          label: 'Sunday Morning Call',
-          value: 'Sunday Morning Call',
-          disabled: true
-        },
-        {
-          label: 'Roll It Over',
-          value: 'Roll It Over'
-        }
-      ] };
+            };
     }
 })
 </script>
