@@ -1,27 +1,31 @@
 <template>
-    <div class="card-container" >
+    <div class="card-container">
         <img :src="item.imageUrl" />
-        
-        
-        
+
+
+
         <!-- <div class="image">
             <img :src="item.imageUrl" />
         </div> -->
         <div class="informations">
             <div class="title">{{ item.name }}</div>
-            <span>Czas przygotowania: </span>
-            <span v-if="time.hours > 0">{{ time.hours }} h </span>
-            <span v-if="time.minutes > 0"> {{ time.minutes }} min </span>
-            <span v-if="time.seconds > 0"> {{ time.seconds }} sec </span>
+            <div class="time">
+                <span>Czas przygotowania: </span>
+                <span v-if="time.hours > 0">{{ time.hours }} h </span>
+                <span v-if="time.minutes > 0"> {{ time.minutes }} min </span>
+                <span v-if="time.seconds > 0"> {{ time.seconds }} sec </span>
+                
+            </div>
+            <div class="author">Dodał: {{ item.username }}</div>
         </div>
-        <div class="icon-section" @click="favorite = !favorite">
+        <div class="icon-section" @click="toggleFavorite">
             <Icon color="red" size="20">
                 <StarRegular v-if="!favorite" />
                 <Star v-if="favorite" />
             </Icon>
         </div>
         <div class="button-link">
-            <n-button @click="calculateTime" type="info">Czytaj dalej...</n-button>
+            <n-button type="info">Czytaj dalej...</n-button>
         </div>
     </div>
 </template>
@@ -29,10 +33,9 @@
 <script lang="ts">
 import { StarRegular, Star } from '@vicons/fa';
 import { Icon } from '@vicons/utils'
-import { defineComponent, ref } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 
 import { Recipe } from '@/types/Recipe';
-import { Step } from '@/types/Step';
 
 
 
@@ -66,11 +69,25 @@ export default defineComponent({
 
             time.value.seconds = totalTimeInSeconds;
 
-            console.log(time.value);
         }
 
+        const toggleFavorite=()=>{
+            favorite.value=!favorite.value;
+            console.log(props.item.username)
+
+
+        }
+
+        const checkFavorite =()=>{
+            console.log()
+        }
+
+        onMounted(() => {
+            calculateTime()
+        })
+
         return {
-            calculateTime, time, favorite
+            time, favorite,toggleFavorite
         }
     }
 })
@@ -88,26 +105,27 @@ export default defineComponent({
     max-width: 350px;
     border-radius: 4%;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.6), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    -webkit-box-shadow: inset 0px 0px 20px 1px rgba(0,0,0,0.75);
-    -moz-box-shadow: inset 0px 0px 20px 0px rgba(0,0,0,0.6);
+    -webkit-box-shadow: inset 0px 0px 20px 1px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: inset 0px 0px 20px 0px rgba(0, 0, 0, 0.6);
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75), inset 0px 0px 30px 0px rgba(0, 0, 0, 0.6);
     flex-wrap: wrap;
     background-color: #c7c5a9;
     font-size: 15px;
     font-weight: bold;
+
     img {
-        width:100%;
+        width: 100%;
         border-radius: 5% 5% 0% 0%;
         aspect-ratio: 16/9;
     }
-    
+
 
     .icon-section {
-        padding-right:2%;
+        padding-right: 2%;
         text-align: right;
         justify-content: right;
         flex-basis: 6%;
-        
+
 
         .xicon:hover {
             cursor: pointer;
@@ -123,9 +141,23 @@ export default defineComponent({
     }
 
     .informations {
-        padding-left:2%;
+        display:flex;
+        flex-direction: column;
+        min-height: 100px;
+        padding-left: 2%;
         text-align: left;
         flex-basis: 90%;
+        justify-content: space-between; 
+
+    }
+
+    .title{
+        align-self: center;
+    }
+
+    .author{
+        align-self: flex-end;
+        
         
     }
 
