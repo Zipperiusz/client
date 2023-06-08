@@ -25,7 +25,7 @@
             </Icon>
         </div>
         <div class="button-link">
-            <n-button type="info">Czytaj dalej...</n-button>
+            <n-button @click="calculateTime(item.id)" to="/recipeView" type="info">Czytaj dalej</n-button>
         </div>
     </div>
 </template>
@@ -34,7 +34,7 @@
 import { StarRegular, Star } from '@vicons/fa';
 import { Icon } from '@vicons/utils'
 import { defineComponent, onMounted, ref } from 'vue';
-
+import { useRouter } from 'vue-router';
 import { Recipe } from '@/types/Recipe';
 
 
@@ -58,18 +58,12 @@ export default defineComponent({
             minutes: 0,
             seconds: 0
         })
-        const calculateTime = () => {
-            let totalTimeInSeconds = props.item.steps.reduce((total, step) => total + step.time, 0);
-
-            time.value.hours = Math.floor(totalTimeInSeconds / 3600);
-            totalTimeInSeconds -= time.value.hours * 3600;
-
-            time.value.minutes = Math.floor(totalTimeInSeconds / 60);
-            totalTimeInSeconds -= time.value.minutes * 60;
-
-            time.value.seconds = totalTimeInSeconds;
-
+        const router = useRouter();
+        const calculateTime = (id: string) => {
+            router.push(`/recipeView?id=${id}`);
         }
+
+        
 
         const toggleFavorite=()=>{
             favorite.value=!favorite.value;
@@ -82,12 +76,8 @@ export default defineComponent({
             console.log()
         }
 
-        onMounted(() => {
-            calculateTime()
-        })
-
         return {
-            time, favorite,toggleFavorite
+            calculateTime,time, favorite,toggleFavorite
         }
     }
 })
@@ -104,28 +94,29 @@ export default defineComponent({
     min-width: 265px;
     max-width: 350px;
     border-radius: 4%;
+    border-width: 1px ;
+    border-style:solid ;   
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.6), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    -webkit-box-shadow: inset 0px 0px 20px 1px rgba(0, 0, 0, 0.75);
-    -moz-box-shadow: inset 0px 0px 20px 0px rgba(0, 0, 0, 0.6);
+    -webkit-box-shadow: inset 0px 0px 20px 1px rgba(0,0,0,0.75);
+    -moz-box-shadow: inset 0px 0px 20px 0px rgba(0,0,0,0.6);
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75), inset 0px 0px 30px 0px rgba(0, 0, 0, 0.6);
     flex-wrap: wrap;
-    background-color: #c7c5a9;
+    background-color: #f3f0d1;
     font-size: 15px;
     font-weight: bold;
-
     img {
-        width: 100%;
+        width:100%;
         border-radius: 5% 5% 0% 0%;
         aspect-ratio: 16/9;
     }
-
+    
 
     .icon-section {
-        padding-right: 2%;
+        padding-right:2%;
         text-align: right;
         justify-content: right;
         flex-basis: 6%;
-
+        
 
         .xicon:hover {
             cursor: pointer;
@@ -141,14 +132,10 @@ export default defineComponent({
     }
 
     .informations {
-        display:flex;
-        flex-direction: column;
-        min-height: 100px;
-        padding-left: 2%;
+        padding-left:2%;
         text-align: left;
         flex-basis: 90%;
-        justify-content: space-between; 
-
+        
     }
 
     .title{

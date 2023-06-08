@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <p>Home page TODO</p>
+    <p>Witaj przyjacielu! Głodny?</p>
 
     <div id="data"></div>
     

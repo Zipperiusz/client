@@ -1,7 +1,8 @@
 <template>
   <div class="form-container">
+    <h1>Dodaj przepis</h1>
     <n-form ref="formRef" :model="formValue">
-      <n-form-item label="Name" path="user.name">
+      <n-form-item label="Nazwa" path="user.name">
         <n-input v-model:value="formValue.name" placeholder="Nazwa" />
       </n-form-item>
       <n-form-item label="Opis" path="user.description">
@@ -126,8 +127,19 @@ export default defineComponent({
 <style lang="scss">
 .form-container {
   flex-basis: 100%;
-  display: flex;
+  display: block;
   justify-content: center;
   align-content: center;
+  margin: 0 auto;
+  min-width: 70%;
+    max-width: 80%;
+    background-color: #0a0a0a26;
+    border-width: 0px 2px 0px 2px;
+    border-style:solid ;    
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.6), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -webkit-box-shadow: inset 0px 0px 20px 1px rgba(0,0,0,0.75);
+    -moz-box-shadow: inset 0px 0px 20px 0px rgba(0,0,0,0.6);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75), inset 0px 0px 30px 0px rgba(0, 0, 0, 0.6);
+  padding:20px;
 }
 </style>
