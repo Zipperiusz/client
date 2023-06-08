@@ -202,10 +202,11 @@ export default defineComponent({
                 .then(response => {
 
                     pageCount.value = response.data.totalPages;
-                    // console.log(response.data)
+                    console.log(response)
                     response.data.result.forEach((element: any) => {
                         Recipes.value.push(
                             {
+                                id: element.id,
                                 name: element.name,
                                 imageUrl: element.imageUrl,
                                 description: element.description,
