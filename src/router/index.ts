@@ -35,7 +35,7 @@ const routes: Array<RouteRecordRaw> = [
     component: RecipesView
   },
   {
-    path: '/recipeView',
+    path: '/recipeView/:id',
     name: 'recipeView',
     component: RecipeView
   },

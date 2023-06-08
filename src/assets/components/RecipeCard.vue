@@ -25,7 +25,7 @@
             </Icon>
         </div>
         <div class="button-link">
-            <n-button @click="calculateTime(item.id)" to="/recipeView" type="info">Czytaj dalej</n-button>
+            <n-button @click="GoToRecipe" type="info">Czytaj dalej...</n-button>
         </div>
     </div>
 </template>
@@ -34,8 +34,9 @@
 import { StarRegular, Star } from '@vicons/fa';
 import { Icon } from '@vicons/utils'
 import { defineComponent, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+
 import { Recipe } from '@/types/Recipe';
+import router from '@/router';
 
 
 
@@ -58,12 +59,18 @@ export default defineComponent({
             minutes: 0,
             seconds: 0
         })
-        const router = useRouter();
-        const calculateTime = (id: string) => {
-            router.push(`/recipeView?id=${id}`);
-        }
+        const calculateTime = () => {
+            let totalTimeInSeconds = props.item.steps.reduce((total, step) => total + step.time, 0);
 
-        
+            time.value.hours = Math.floor(totalTimeInSeconds / 3600);
+            totalTimeInSeconds -= time.value.hours * 3600;
+
+            time.value.minutes = Math.floor(totalTimeInSeconds / 60);
+            totalTimeInSeconds -= time.value.minutes * 60;
+
+            time.value.seconds = totalTimeInSeconds;
+
+        }
 
         const toggleFavorite=()=>{
             favorite.value=!favorite.value;
@@ -76,8 +83,17 @@ export default defineComponent({
             console.log()
         }
 
+        const GoToRecipe =()=>{
+            console.log(props.item.id)
+            router.push({name:'recipeView',params:{id:props.item.id}})
+        }
+
+        onMounted(() => {
+            calculateTime()
+        })
+
         return {
-            calculateTime,time, favorite,toggleFavorite
+            time, favorite,toggleFavorite,GoToRecipe
         }
     }
 })
@@ -109,14 +125,14 @@ export default defineComponent({
         border-radius: 5% 5% 0% 0%;
         aspect-ratio: 16/9;
     }
-    
+
 
     .icon-section {
         padding-right:2%;
         text-align: right;
         justify-content: right;
         flex-basis: 6%;
-        
+
 
         .xicon:hover {
             cursor: pointer;
@@ -135,7 +151,7 @@ export default defineComponent({
         padding-left:2%;
         text-align: left;
         flex-basis: 90%;
-        
+
     }
 
     .title{
