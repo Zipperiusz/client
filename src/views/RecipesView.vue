@@ -200,7 +200,6 @@ export default defineComponent({
                 chosenIngredients.value
             )
                 .then(response => {
-
                     pageCount.value = response.data.totalPages;
                     console.log(response)
                     response.data.result.forEach((element: any) => {
@@ -211,7 +210,7 @@ export default defineComponent({
                                 imageUrl: element.imageUrl,
                                 description: element.description,
                                 steps: element.steps,
-                                username: element.user.name,
+                                user: element.user,
                                 ingredients: element.ingredients
                             }
                         )

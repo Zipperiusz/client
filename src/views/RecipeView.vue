@@ -1,10 +1,18 @@
 <template>
   <div class="recipe-container">
+    <div class="author-panel" v-if="isAuthor">
+      <n-button @click="goToEdit" class="author-panel--button" size="large" type="info">
+      Edytuj
+    </n-button>
+    <n-button @click="tryDelete" class="author-panel--button" size="large"  type="error">
+      Usuń
+    </n-button>
+    </div>
     <h1>{{ recipe?.name }}</h1>
     <img :src="recipe?.imageUrl" :alt="recipe?.name" style="max-width: 500px;">
     <h2>Opis: {{ recipe?.description }}</h2> 
     <div class="recipe-ingredients">
-      <h2>Skladniki:</h2>
+      <h2>Składniki:</h2>
       <ul>
     <li v-for="(ingredient,index) in recipe?.ingredients" :key="index">{{ ingredient.name }} - {{ ingredient.quantity }} {{ ingredient.quantityType }}</li>
   </ul> 
@@ -15,6 +23,7 @@
     <li v-for="step in recipe?.steps" :key="step.name">{{ step.name }} - Czas: {{ step.time }} minut</li>
   </ol>
   </div>
+  <h3>Autor: {{ recipe?.user.name }}</h3>
   <h2>Smacznego :)</h2>
   </div>
 </template>
@@ -22,9 +31,10 @@
 
 <script lang="ts">
 import router from '@/router';
+import { authService } from '@/services/auth.service';
 import { Recipe } from '@/types/Recipe';
 import axios from 'axios';
-import { defineComponent, onMounted, ref } from 'vue';
+import { computed, defineComponent, onMounted, ref } from 'vue';
 
 export default defineComponent({
   setup() {
@@ -45,13 +55,33 @@ export default defineComponent({
           });
       }
     };
+    const goToEdit =()=>{
+            console.log(id.value)
+            router.push({name:'editRecipeView',params:{id:id.value}})
+        }
+    const tryDelete =()=>{
+      //ask for confirmation
+      if(confirm("Czy na pewno chcesz usunąć ten przepis?")){
+        axios.delete(`https://localhost:7179/Recipe/${id.value}`)
+        .then(response => {
+          console.log(response.data);
+          router.push({name:'recipesView'})
+        })
+        .catch(error => {
+          console.error('Błąd podczas usuwania przepisu:', error);
+        });
+      }
 
+      
+
+    }
+    let isAuthor = computed(() => recipe.value?.user.name == authService.getName())
     onMounted(() => {
       getRecipe();
     });
 
     return {
-      recipe,
+      recipe, isAuthor,goToEdit, tryDelete
     };
   },
 });
@@ -79,6 +109,18 @@ export default defineComponent({
     -webkit-box-shadow: inset 0px 0px 20px 1px rgba(0,0,0,0.75);
     -moz-box-shadow: inset 0px 0px 20px 0px rgba(0,0,0,0.6);
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75), inset 0px 0px 30px 0px rgba(0, 0, 0, 0.6);
+}
+.author-panel{
+  //display element inside on right, container is flex 
+  display: flex;
+  justify-content: flex-end;
+  margin-top:10px;
+  margin-right: 20px;
+  &--button{
+    margin-left: 10px;
+    padding:10px;
+  }
+
 }
 .recipe-ingredients{
     margin-left:20px;

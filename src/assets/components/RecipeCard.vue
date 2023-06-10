@@ -16,12 +16,11 @@
                 <span v-if="time.seconds > 0"> {{ time.seconds }} sec </span>
                 
             </div>
-            <div class="author">Dodał: {{ item.username }}</div>
+            <div class="author">Dodał: {{ item.user.name }}</div>
         </div>
-        <div class="icon-section" @click="toggleFavorite">
-            <Icon color="red" size="20">
-                <StarRegular v-if="!favorite" />
-                <Star v-if="favorite" />
+        <div v-if="isAuthor" class="icon-section">
+            <Icon color="red" size="20">               
+                <Star />
             </Icon>
         </div>
         <div class="button-link">
@@ -31,19 +30,19 @@
 </template>
 
 <script lang="ts">
-import { StarRegular, Star } from '@vicons/fa';
+import {  Star } from '@vicons/fa';
 import { Icon } from '@vicons/utils'
-import { defineComponent, onMounted, ref } from 'vue';
+import { computed, defineComponent, onMounted, ref } from 'vue';
 
 import { Recipe } from '@/types/Recipe';
 import router from '@/router';
+import { authService } from '@/services/auth.service';
 
 
 
 export default defineComponent({
     components: {
         Icon,
-        StarRegular,
         Star
     },
     props: {
@@ -53,7 +52,7 @@ export default defineComponent({
         }
     },
     setup(props) {
-        let favorite = ref(false);
+        let isAuthor = computed(() => props.item.user.name == authService.getName())
         const time = ref({
             hours: 0,
             minutes: 0,
@@ -72,12 +71,7 @@ export default defineComponent({
 
         }
 
-        const toggleFavorite=()=>{
-            favorite.value=!favorite.value;
-            console.log(props.item.username)
-
-
-        }
+        
 
         const checkFavorite =()=>{
             console.log()
@@ -93,7 +87,7 @@ export default defineComponent({
         })
 
         return {
-            time, favorite,toggleFavorite,GoToRecipe
+            time, GoToRecipe, isAuthor
         }
     }
 })

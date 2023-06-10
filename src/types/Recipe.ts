@@ -1,5 +1,6 @@
 import {Ingredient} from "./Ingredient";
 import {Step} from "./Step";
+import { UserDto } from "./UserDto";
 
 export  interface Recipe  {
     id: number;
@@ -8,5 +9,5 @@ export  interface Recipe  {
     imageUrl:string,
     description: string;
     steps: Array<Step>
-    username: string
+    user: UserDto
 }

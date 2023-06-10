@@ -16,14 +16,14 @@
         Składniki
       </n-divider>
 
-      
+
       <n-dynamic-input v-model:value="formValue.ingredients" :on-create="onIngredientCreate">
-      <template #default="{ value }">
-        <n-select v-model:value="value.id" :options="selectOptions" filterable />
-        <n-input-number v-model:value="value.quantity" />
-        <n-input v-model:value="value.quantityType" />
-      </template>
-    </n-dynamic-input>
+        <template #default="{ value }">
+          <n-select v-model:value="value.id" :options="selectOptions" filterable />
+          <n-input-number v-model:value="value.quantity" />
+          <n-input v-model:value="value.quantityType" />
+        </template>
+      </n-dynamic-input>
 
       <n-divider title-placement="center">
         Kroki
@@ -42,34 +42,41 @@
 
   </div>
 </template>
-
-
+  
+  
 <script lang="ts">
-import { defineComponent, onBeforeMount, ref } from 'vue';
+import { defineComponent, onBeforeMount, ref, onMounted } from 'vue';
 import axios from 'axios';
 import { FakeOption } from "@/types/FakeOption";
-import  {IngredientTag}  from '@/types/IngredientTag';
+import { IngredientTag } from '@/types/IngredientTag';
+import { Recipe } from '@/types/Recipe';
+import router from '@/router';
 export default defineComponent({
 
   setup() {
-    const formValue = ref({
-      name: '',
-      imageUrl: '',
-      description: '',
-      ingredients: ref([{
-        id: '',
-        name: '',
-        quantity: 1,
-        quantityType: '',
-
-      }]),
-      steps: ref([{
-        name: '',
-        time: 0
-      }]),
-    });
+    const formValue = ref<Recipe | null>();
 
     const selectOptions = ref<FakeOption[]>([])
+    const recipe = ref<Recipe>();
+    const id = ref<number | null>(null);
+
+    const getRecipe = () => {
+      if (router) {
+        id.value = Number(router.currentRoute.value.params.id);
+        axios
+          .get(`https://localhost:7179/Recipe/${id.value}`)
+          .then(response => {
+            recipe.value = response.data;
+            formValue.value = recipe.value;
+            console.log(recipe.value);
+          })
+          .catch(error => {
+            console.error('Błąd podczas pobierania przepisu:', error);
+          });
+      }
+    };
+
+
 
 
     const getInredientList = () => {
@@ -84,14 +91,18 @@ export default defineComponent({
 
     onBeforeMount(() => {
       getInredientList();
+      getRecipe();
+
     })
+
+
 
 
     const submitForm = async () => {
       let output = JSON.parse(JSON.stringify(formValue.value, null, 2))
       console.log(output);
-      await axios.post(`${process.env.VUE_APP_API_URL}/Recipe`, output).then(res => {
-        console.log(res.data)
+      await axios.put(`${process.env.VUE_APP_API_URL}/Recipe/${id.value}`, output).then(res => {
+        router.push({name:'recipeView',params:{id:id.value}})
       }).catch(err => {
         console.log(err.message)
       })
@@ -122,7 +133,7 @@ export default defineComponent({
 
 });
 </script>
-
+  
 <style lang="scss">
 .form-container {
   flex-basis: 100%;
@@ -131,14 +142,14 @@ export default defineComponent({
   align-content: center;
   margin: 0 auto;
   min-width: 70%;
-    max-width: 80%;
-    background-color: #0a0a0a26;
-    border-width: 0px 2px 0px 2px;
-    border-style:solid ;    
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.6), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    -webkit-box-shadow: inset 0px 0px 20px 1px rgba(0,0,0,0.75);
-    -moz-box-shadow: inset 0px 0px 20px 0px rgba(0,0,0,0.6);
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75), inset 0px 0px 30px 0px rgba(0, 0, 0, 0.6);
-  padding:20px;
+  max-width: 80%;
+  background-color: #0a0a0a26;
+  border-width: 0px 2px 0px 2px;
+  border-style: solid;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.6), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  -webkit-box-shadow: inset 0px 0px 20px 1px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: inset 0px 0px 20px 0px rgba(0, 0, 0, 0.6);
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75), inset 0px 0px 30px 0px rgba(0, 0, 0, 0.6);
+  padding: 20px;
 }
 </style>

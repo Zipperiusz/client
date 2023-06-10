@@ -5,6 +5,7 @@ import RegisterView from '../views/RegisterView.vue';
 import AddRecipeView from '../views/AddRecipeView.vue';
 import RecipesView from '../views/RecipesView.vue';
 import RecipeView from '../views/RecipeView.vue';
+import EditRecipeView from '../views/EditRecipeView.vue';
 import LogoutView from '../views/LogoutView.vue';
 import UserView from '../views/UserView.vue';
 
@@ -38,6 +39,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/recipeView/:id',
     name: 'recipeView',
     component: RecipeView
+  },
+  {
+    path: '/editRecipeView/:id',
+    name: 'editRecipeView',
+    component: EditRecipeView
   },
   {
     path: '/logout',
