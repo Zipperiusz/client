@@ -20,7 +20,8 @@
     <div class="recipe-steps">
     <h2>Kroki:</h2>
   <ol>
-    <li v-for="step in recipe?.steps" :key="step.name">{{ step.name }} - Czas: {{ step.time }} minut</li>
+
+    <li v-for="step in recipe?.steps" :key="step.name">{{ step.name }} - Czas: {{ getTime() }}</li>
   </ol>
   </div>
   <h3>Autor: {{ recipe?.user.name }}</h3>
@@ -55,6 +56,30 @@ export default defineComponent({
           });
       }
     };
+
+    const getTime = () => {
+  let time = recipe.value?.steps.reduce((sum, step) => sum + (step.time ?? 0), 0);
+  if (time !== undefined) {
+    let hours = Math.floor(time / 3600);
+    let minutes = Math.floor((time % 3600) / 60);
+    let seconds = time % 60;
+    let result = '';
+    
+    if (hours > 0) {
+      result += `${hours}h `;
+    }
+    if (minutes > 0) {
+      result += `${minutes}m `;
+    }
+    if (seconds > 0) {
+      result += `${seconds}s`;
+    }
+    
+    return result.trim();
+  }
+  return '';
+};
+
     const goToEdit =()=>{
             console.log(id.value)
             router.push({name:'editRecipeView',params:{id:id.value}})
@@ -81,7 +106,7 @@ export default defineComponent({
     });
 
     return {
-      recipe, isAuthor,goToEdit, tryDelete
+      recipe, isAuthor,goToEdit, tryDelete,getTime
     };
   },
 });
