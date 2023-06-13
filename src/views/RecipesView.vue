@@ -122,7 +122,7 @@
             </div>
             <div class="recipe-col" v-if="Recipes.length">
                 <div class="recipe-cards">
-                    <RecipeCard class="card-item" :item="recipe" v-for="(recipe, index) in Recipes" :key="index" />
+                    <RecipeCard class="card-item" :item="recipe" v-for="recipe in Recipes" :key="recipe.id" />
 
                 </div>
                 <div class="pagination" v-if="showPagination">

@@ -21,7 +21,7 @@
     <h2>Kroki:</h2>
   <ol>
 
-    <li v-for="step in recipe?.steps" :key="step.name">{{ step.name }} - Czas: {{ getTime() }}</li>
+    <li v-for="step in recipe?.steps" :key="step.name">{{ step.name }} - Czas: {{ getTime(step.time) }}</li>
   </ol>
   </div>
   <h3>Autor: {{ recipe?.user.name }}</h3>
@@ -57,8 +57,8 @@ export default defineComponent({
       }
     };
 
-    const getTime = () => {
-  let time = recipe.value?.steps.reduce((sum, step) => sum + (step.time ?? 0), 0);
+    const getTime = (stepTime:number) => {
+  let time = stepTime
   if (time !== undefined) {
     let hours = Math.floor(time / 3600);
     let minutes = Math.floor((time % 3600) / 60);

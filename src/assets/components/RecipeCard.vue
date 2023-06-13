@@ -59,8 +59,10 @@ export default defineComponent({
             seconds: 0
         })
         const calculateTime = () => {
-            let totalTimeInSeconds = props.item.steps.reduce((total, step) => total + step.time, 0);
-
+            let totalTimeInSeconds = 0;
+            props.item.steps.forEach(step => {
+                totalTimeInSeconds += step.time;
+            });
             time.value.hours = Math.floor(totalTimeInSeconds / 3600);
             totalTimeInSeconds -= time.value.hours * 3600;
 
