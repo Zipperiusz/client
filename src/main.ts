@@ -8,7 +8,7 @@ import axios from 'axios'
 import VueAxios from 'vue-axios';
 import { authService } from './services/auth.service';
 
-
+axios.defaults.baseURL = 'https://localhost:7179';
 axios.interceptors.request.use(request => {
     const token = authService.getToken();
 

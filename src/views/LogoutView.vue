@@ -1,8 +1,10 @@
 <template>
-  <div>
+  <div class="container">
     <h2>Czy na pewno chcesz się wylogować?</h2>
+    <div class="buttons">
     <n-button type="primary" @click="confirmLogout">Tak</n-button>
-    <n-button @click="cancelLogout">Nie</n-button>
+    <n-button type="error" @click="cancelLogout">Nie</n-button>
+  </div>
   </div>
 </template>
 
@@ -35,3 +37,14 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+
+.container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+</style>

@@ -103,7 +103,6 @@ export default {
 
 body {
   background-color: $primary-bg;
-  height: 100vh;
 }
 
 #lol {

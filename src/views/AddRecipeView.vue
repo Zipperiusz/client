@@ -74,7 +74,7 @@ export default defineComponent({
 
 
     const getInredientList = () => {
-      axios.get<{ ingredients: IngredientTag[] }>(`https://localhost:7179/Ingredient/GetAll`).then(res => {
+      axios.get<{ ingredients: IngredientTag[] }>(`Ingredient/GetAll`).then(res => {
         // console.log(res.data)
         selectOptions.value = res.data.ingredients.map((elem) => ({
           label: elem.name,
@@ -91,7 +91,7 @@ export default defineComponent({
     const submitForm = async () => {
       let output = JSON.parse(JSON.stringify(formValue.value, null, 2))
       console.log(output);
-      await axios.post(`${process.env.VUE_APP_API_URL}/Recipe`, output).then(res => {
+      await axios.post(`Recipe`, output).then(res => {
         console.log(res.data)
         window.location.reload();
       }).catch(err => {

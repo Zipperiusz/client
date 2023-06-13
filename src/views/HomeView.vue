@@ -19,7 +19,7 @@ export default {
     const getData = async () =>{
 
       
-      const res = await axios.get(`${process.env.VUE_APP_API_URL}/Ingredient/1/5`)
+      const res = await axios.get(`Ingredient/1/5`)
       // console.log(res.data)
     }
 

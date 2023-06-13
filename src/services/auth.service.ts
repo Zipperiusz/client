@@ -9,7 +9,7 @@ export class AuthService {
     public isLoggedIn = computed(() => !!this.token.value);
 
     public login(email: string, password: string): Promise<string> {
-        return axios.post(`${process.env.VUE_APP_API_URL}/Auth/login`, { email, password }).then((response) => {
+        return axios.post(`Auth/login`, { email, password }).then((response) => {
             this.setToken(response.data.data);
             this.setName(response.data.name)
 
@@ -18,7 +18,7 @@ export class AuthService {
     }
 
     public register(name:string, email: string, password: string): Promise<string> {
-        return axios.post(`${process.env.VUE_APP_API_URL}/Auth/Register`, { name, email, password }).then((response) => {
+        return axios.post(`Auth/Register`, { name, email, password }).then((response) => {
             return response.data
         })
     }

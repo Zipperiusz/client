@@ -87,7 +87,7 @@ export default defineComponent({
     const tryDelete =()=>{
       //ask for confirmation
       if(confirm("Czy na pewno chcesz usunąć ten przepis?")){
-        axios.delete(`https://localhost:7179/Recipe/${id.value}`)
+        axios.delete(`Recipe/${id.value}`)
         .then(response => {
           console.log(response.data);
           router.push({name:'recipesView'})
