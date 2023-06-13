@@ -49,6 +49,7 @@ import { defineComponent, onBeforeMount, ref } from 'vue';
 import axios from 'axios';
 import { FakeOption } from "@/types/FakeOption";
 import  {IngredientTag}  from '@/types/IngredientTag';
+import router from '@/router';
 export default defineComponent({
 
   setup() {
@@ -92,6 +93,7 @@ export default defineComponent({
       console.log(output);
       await axios.post(`${process.env.VUE_APP_API_URL}/Recipe`, output).then(res => {
         console.log(res.data)
+        router.push({name:'addRecipe'})
       }).catch(err => {
         console.log(err.message)
       })
