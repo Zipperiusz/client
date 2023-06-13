@@ -93,7 +93,7 @@ export default defineComponent({
       console.log(output);
       await axios.post(`${process.env.VUE_APP_API_URL}/Recipe`, output).then(res => {
         console.log(res.data)
-        router.push({name:'addRecipe'})
+        window.location.reload();
       }).catch(err => {
         console.log(err.message)
       })
